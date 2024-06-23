@@ -1,0 +1,11 @@
+{"level":"info","message":"Mongoose connected to mongodb+srv://nftthee:nftthee@cluster0.hov9i7k.mongodb.net/"}
+{"level":"info","message":"Mongoose connected to mongodb+srv://nftthee:nftthee@cluster0.hov9i7k.mongodb.net/"}
+{"level":"info","message":"Mongoose connected to mongodb+srv://nftthee:nftthee@cluster0.hov9i7k.mongodb.net/"}
+{"level":"info","message":"Mongoose disconnected"}
+{"level":"info","message":"Mongoose connected to mongodb+srv://nftthee:nftthee@cluster0.hov9i7k.mongodb.net/"}
+{"level":"info","message":"Mongoose disconnected"}
+{"level":"error","message":"Mongoose connection error: Error: querySrv ETIMEOUT _mongodb._tcp.cluster0.hov9i7k.mongodb.net"}
+{"level":"info","message":"Mongoose connected to mongodb+srv://nftthee:nftthee@cluster0.hov9i7k.mongodb.net/"}
+{"level":"info","message":"Mongoose connected to mongodb+srv://nftthee:nftthee@cluster0.hov9i7k.mongodb.net/"}
+{"level":"info","message":"Mongoose connected to mongodb+srv://nftthee:nftthee@cluster0.hov9i7k.mongodb.net/"}
+{"level":"info","message":"Mongoose connected to mongodb+srv://nftthee:nftthee@cluster0.hov9i7k.mongodb.net/"}
