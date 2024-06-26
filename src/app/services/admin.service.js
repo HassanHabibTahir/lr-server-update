@@ -17,6 +17,11 @@ async function hashPassword(password) {
 const singUp = async (userBody) => {
   const userCount = await User.countDocuments();
   userBody.role = "admin";
+  // if (userCount === 0) {
+  //   userBody.role = "admin";
+  // } else {
+  //   userBody.role = "user";
+  // }
   return User.create(userBody);
 };
 

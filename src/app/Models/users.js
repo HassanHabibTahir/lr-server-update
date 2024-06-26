@@ -42,6 +42,45 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: "",
   },
+
+  firstName: {
+    type: String,
+    trim: true,
+  },
+  lastName: {
+    type: String,
+    trim: true,
+  },
+  contact: {
+    type: String,
+    validate(value) {
+      if (!validator.isMobilePhone(value, "any")) {
+        throw new Error("Invalid contact number");
+      }
+    },
+  },
+  typeRole: {
+    type: String,
+  },
+  jobType: {
+    type: String,
+    enum: ["monthly", "project-based"],
+  },
+  salary: {
+    type: Number,
+  },
+  isCommission: {
+    type: Boolean,
+  },
+  dailyJobHours: {
+    type: Number,
+  },
+  country: {
+    type: String,
+  },
+  clientSource: {
+    type: String,
+  },
   isDeleted: {
     type: Boolean,
     default: false,
@@ -53,10 +92,13 @@ const userSchema = new mongoose.Schema({
   updated_at: {
     type: Date,
   },
+  isActive:{
+    type: Boolean,
+    default: true,
+  }
 });
 
 userSchema.methods.isPasswordMatch = async function (password) {
-  
   const user = this;
   return bcrypt.compare(password, user.password);
 };
