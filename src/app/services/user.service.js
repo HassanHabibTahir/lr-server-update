@@ -18,19 +18,19 @@ const getAllUsers = async () => {
   return User.find({});
 };
 
-const editUser = async () => {
-  if (updateBody.password) {
-    updateBody.password = await bcrypt.hash(updateBody.password, 10);
-  }
-  return User.findByIdAndUpdate(id, updateBody, { new: true });
+const updateProfile = async (userId,userBody) => {
+  const updatedUser = await User.findByIdAndUpdate(userId, userBody, {
+    new: true,
+  });
+  return updatedUser;
 };
 
-const deleteUser = async () => {
+const deleteUser = async (id) => {
   return User.findByIdAndDelete(id);
 };
 
-const blockActivateUser = async () => {
-  return User.findByIdAndUpdate(id, { isActive: isActive }, { new: true });
+const blockActivateUser = async (userId,isActive) => {
+  return User.findByIdAndUpdate(userId, { isActive: isActive }, { new: true });
 
 };
 
@@ -38,7 +38,7 @@ module.exports = {
   checkUserExist,
   addUser,
   getAllUsers,
-  editUser,
+  updateProfile,
   deleteUser,
   blockActivateUser,
   getUserInfo

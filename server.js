@@ -39,7 +39,7 @@ app.use((req, res, next) => {
 app.get("/health-check", (req, res) => {
     var timestamp = 1703768083 * 1000; // Convert seconds to milliseconds
 var date = new Date(timestamp);
-console.log(date);
+
     res.send("OK");
 });
 

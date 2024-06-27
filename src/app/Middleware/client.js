@@ -7,16 +7,15 @@ const app_constants = require("../../../config/constants");
 
 
 module.exports = async (req, res, next) => {
-  const token = req.header(constants.ADMIN_TOKEN_NAME);
+  const token = req.header(constants.CLIENT_TOKEN_NAME);
   if (!token)
     return res.status(401).send(`Access denied. Invalid token provided.`);
-
   try {
     const {data} = jwt.verify(token, app_constants.APP_SECRET);
-    
+   
     const user = await userService.getUserInfo(data.userId);
     
-    if (user?.role !== "admin") {
+    if (user?.role !== "client") {
       return res
         .status(401)
         .send(`Access denied. Access level not authorized.`);

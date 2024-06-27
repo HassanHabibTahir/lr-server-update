@@ -1,9 +1,10 @@
 const httpStatus = require("http-status");
 const { userService } = require("../services");
+const { getStoragePath } = require("../../helpers/storageUtil");
 
 exports.createUser = async (req, res) => {
    try{
-    console.log(req.body);
+   
     const { email } = req.body;
     const isUserExist = await userService.checkUserExist(email);
     if (isUserExist) {
@@ -11,9 +12,7 @@ exports.createUser = async (req, res) => {
         .status(httpStatus.UNPROCESSABLE_ENTITY)
         .json({ message: "Email address already exists!" });
     }
-
     const user = await userService.addUser(req.body);
-
     res.status(httpStatus.CREATED).send(user);
 } catch (error) {
   console.error(`Catch Error: in add User => ${error}`);
@@ -37,14 +36,14 @@ exports.getAllUsers = async (req, res) => {
     
   exports.deleteUser = async (req, res) => {
     try {
-      const { id } = req.params;
-      console.log(id,"id")
-      // const deletedUser = await userService.deleteUser(id);
-      // if (!deletedUser) {
-      //   return res
-      //     .status(httpStatus.NOT_FOUND)
-      //     .json({ message: "User not found" });
-      // }
+      const { userId } = req.params;
+      
+      const deletedUser = await userService.deleteUser(userId);
+      if (!deletedUser) {
+        return res
+          .status(httpStatus.NOT_FOUND)
+          .json({ message: "User not found" });
+      }
       res.status(httpStatus.OK).json({ message: "User deleted successfully" });
     } catch (error) {
       console.error(`Catch Error: in deleteUser => ${error}`);
@@ -56,7 +55,28 @@ exports.getAllUsers = async (req, res) => {
 
 
   exports.updateProfile = async (req, res) => {
-    try{}catch(error){
+    try{
+      const { userId } = req.params;
+      let profileImage;
+      let storagePath;
+      if (req?.files?.profileImage) {
+        storagePath = getStoragePath(req?.files?.profileImage);
+      }
+      if (req.files && req.files.profileImage) {
+        const file = req.files.profileImage;
+        await file.mv(storagePath);
+        profileImage = file?.name;
+      }
+      const updateBody = {
+        ...req.body,
+      };
+      if (profileImage) {
+        updateBody.profileImage = profileImage;
+      }
+      const updatedUser = await userService.updateProfile(userId, updateBody);
+      res.status(httpStatus.OK).json(updatedUser);
+
+    }catch(error){
         return res
          .status(httpStatus.INTERNAL_SERVER_ERROR)
          .json({ message: "Internal server error", error: error.message });
@@ -68,9 +88,9 @@ exports.getAllUsers = async (req, res) => {
 
   exports.blockActivateUser = async (req, res) => {
     try {
-      const { id } = req.params;
+      const { userId } = req.params;
       const { isActive } = req.body;
-      const updatedUser = await userService.blockActivateUser(id, isActive);
+      const updatedUser = await userService.blockActivateUser(userId, isActive);
       if (!updatedUser) {
         return res
           .status(httpStatus.NOT_FOUND)

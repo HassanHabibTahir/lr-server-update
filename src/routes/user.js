@@ -5,6 +5,7 @@ const userValidator = require("../app/Validators/user");
 const commonValidators = require("../app/Validators/commonValidators");
 const errorMsgs = commonValidators.responseValidationResults;
 const admin = require("../app/Middleware/admin");
+const user = require("../app/Middleware/user");
 router.post(
   "/create",
   [userValidator.createUser, errorMsgs],
@@ -21,6 +22,18 @@ router.delete(
   userController.deleteUser
 );
 
-// router.post("update",[],userController.updateProfile)
+router.put(
+  "/profile/:userId",
+  [userValidator.updateProfile, errorMsgs],
+  user,
+  userController.updateProfile
+);
+
+router.put(
+  "/block-user/:userId",
+  [userValidator.deactivateUser, errorMsgs],
+  admin,
+  userController.blockActivateUser
+);
 
 module.exports = router;
