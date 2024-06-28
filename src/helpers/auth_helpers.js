@@ -12,6 +12,7 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       try {
         const { _id, role } = userData;
+        console.log(role)
         const data = {
           userId: _id,
           role: role,
@@ -22,7 +23,6 @@ module.exports = {
           },
           app_constants.APP_SECRET
         );
-
         let refreshToken = await bcrypt.hash(`${uuid.v4()}`, 10);
         if (!accessToken || !refreshToken) {
           return reject(

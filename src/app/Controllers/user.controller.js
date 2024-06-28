@@ -1,6 +1,7 @@
 const httpStatus = require("http-status");
 const { userService } = require("../services");
 const { getStoragePath } = require("../../helpers/storageUtil");
+const { Roles } = require("../../helpers/roles");
 
 exports.createUser = async (req, res) => {
    try{
@@ -24,7 +25,10 @@ exports.createUser = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
     try {
-      const users = await userService.getAllUsers();
+      let data = {
+        role:Roles.USER
+      }
+      const users = await userService.getAllUsers(data);
       res.status(httpStatus.OK).send(users);
     } catch (error) {
       console.error(`Catch Error: in getAllUsers => ${error}`);
