@@ -1,13 +1,7 @@
+const { Roles } = require("../../helpers/roles");
 const { User } = require("../Models/users");
 const bcrypt = require('bcrypt');
-const checkUserExist = async (email) => {
-  const userExist = await User.findOne({ email: email });
-  return userExist;
-};
-const checkUserById = async (id) => {
-  const userExist = await User.findById({ _id: id });
-  return userExist;
-};
+
 
 async function hashPassword(password) {
       const hashedPassword = await bcrypt.hash(password, 8);
@@ -17,11 +11,11 @@ async function hashPassword(password) {
 const singUp = async (userBody) => {
   const userCount = await User.countDocuments();
   userBody.role = "admin";
-  // if (userCount === 0) {
-  //   userBody.role = "admin";
-  // } else {
-  //   userBody.role = "user";
-  // }
+  if (userCount === 0) {
+    userBody.role = Roles.SuperAdmin;
+  } else {
+    userBody.role = Roles.ADMIN;
+  }
   return User.create(userBody);
 };
 
@@ -43,9 +37,7 @@ const updatePassword = async (userId,userBody) => {
 
 module.exports = {
   singUp,
-  checkUserExist,
   updateProfile,
   hashPassword,
-  checkUserById,
   updatePassword
 };

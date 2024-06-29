@@ -1,11 +1,15 @@
+// USE IN MODULE AND CONDITIONS
 const allRoles = {
     user: [],
     admin: ['getUsers', 'manageUsers'],
+    superAdmin:[],
     client:[]
   };
+  // use ENUM
   const Roles = {
-    USER: 'user',
     ADMIN: 'admin',
+    SuperAdmin: 'superAdmin',
+    USER: 'user',
     CLIENT: 'client',
   }
   const roles = Object.keys(allRoles);
