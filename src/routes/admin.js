@@ -17,9 +17,23 @@ router.post(
   [adminValidator.signup, errorMsgs],
   adminController.signup
 );
-router.post('/login', [adminValidator.login,errorMsgs],adminController.login);
-router.put('/profile/:userId',[adminValidator.updateProfile,errorMsgs],admin, adminController.updateProfile);
-router.put('/updatePassword/:userId',[adminValidator.updatePassword,errorMsgs],admin, adminController.updatePassword);
-router.put('/deleteAdmin/:userId',[adminValidator.deleteAdmin,errorMsgs],admin, adminController.deleteAdmin);
+router.put(
+  "/update/:userId",
+  [adminValidator.updateProfile, errorMsgs],
+  admin,
+  adminController.updateProfile
+);
+router.put(
+  "/updatePassword/:userId",
+  [adminValidator.updatePassword, errorMsgs],
+  admin,
+  adminController.updatePassword
+);
+router.put(
+  "/delete/:userId",
+  [adminValidator.deleteAdmin, errorMsgs],
+  admin,
+  adminController.deleteAdmin
+);
 
 module.exports = router;

@@ -1,6 +1,6 @@
 // controllers/projectController.js
 const httpStatus = require("http-status");
-const projectService = require("../services/projectService");
+const projectService = require("../services/project.service");
 
 // Check if a project exists
 exports.checkProjectExist = async (req, res) => {
@@ -20,7 +20,7 @@ exports.checkProjectExist = async (req, res) => {
 };
 
 // Create a new project
-exports.addProject = async (req, res) => {
+exports.createProject = async (req, res) => {
   try {
     const projectData = req.body;
     const newProject = await projectService.addProject(projectData);
@@ -49,11 +49,11 @@ exports.getAllProjects = async (req, res) => {
 // Update project details
 exports.updateProject = async (req, res) => {
   try {
-    const projectId = req.params.id;
+    const {projectId} = req.params;
     const projectData = req.body;
     const updatedProject = await projectService.updateProject(
       projectId,
-      projectData
+      projectData 
     );
     res.status(httpStatus.OK).json(updatedProject);
   } catch (error) {
@@ -67,7 +67,7 @@ exports.updateProject = async (req, res) => {
 // Delete a project
 exports.deleteProject = async (req, res) => {
   try {
-    const projectId = req.params.id;
+    const {projectId} = req.params;
     await projectService.deleteProject(projectId);
     res.status(httpStatus.OK).json({ message: "Project deleted successfully" });
   } catch (error) {

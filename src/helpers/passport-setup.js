@@ -10,8 +10,7 @@ passport.use(new GoogleStrategy({
     callbackURL: "/auth/google/callback"
   },
   async (accessToken, refreshToken, profile, done) => {
-    // Check if user already exists in your DB
-    console.log('profile id ' , profile.id);
+   
     const existingUser = await User.findOne({ googleId: profile.id });
     
     if (existingUser) {

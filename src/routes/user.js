@@ -23,7 +23,7 @@ router.delete(
 );
 
 router.put(
-  "/profile/:userId",
+  "/update/:userId",
   [userValidator.updateProfile, errorMsgs],
   user,
   userController.updateProfile

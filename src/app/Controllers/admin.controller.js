@@ -6,7 +6,8 @@ const generator = require("generate-password");
 // Helpers
 const authHelper = require("../../helpers/auth_helpers");
 const httpStatus = require("http-status");
-const { adminService } = require("../services");
+const { adminService, commonService } = require("../services");
+
 const path = require("path");
 const { getStoragePath } = require("../../helpers/storageUtil");
 const { validationResult } = require("express-validator");
@@ -17,7 +18,7 @@ const { hashPassword } = require("../services/admin.service");
 exports.signup = async (req, res) => {
   try {
     const { email } = req.body;
-    const isUserExist = await adminService.checkUserExist(email);
+    const isUserExist = await commonService.checkUserExist(email);
     if (isUserExist) {
       return res
         .status(httpStatus.UNPROCESSABLE_ENTITY)
@@ -33,48 +34,7 @@ exports.signup = async (req, res) => {
   }
 };
 
-// ************ LOGIN ************ //
-exports.login = async function (req, res) {
-  try {
-    const { password, email } = req.body;
-    const user = await adminService.checkUserExist(email);
-    if (!user) {
-      return res.status(400).send({
-        message: `Invalid Email Or password`,
-      });
-    }
-    let isMatched = await user.isPasswordMatch(password);
-    if (!isMatched) {
-      return res.status(400).send({
-        message: `Invalid password`,
-      });
-    }
-    if (user.is_deleted == 1) {
-      return res.status(400).json({
-        message: `User no longer exits.`,
-      });
-    }
-    user.last_login = new Date();
-    await user.save();
-    let userData = user.toJSON();
-    let loginInfo = await authHelper.generateLoginInfo(userData);
-    user.refreshToken = loginInfo.refreshToken;
 
-    return res.send({
-      message: "Logged in successfully.",
-      token: loginInfo.accessToken,
-      refreshToken: loginInfo.refreshToken,
-      //   is_guest_user: false,
-    });
-  } catch (error) {
-    console.log(`Catch Error: in login user => ${error}`);
-    return res.send({
-      status: false,
-      message: "Error: Internal server error",
-      error: error.message,
-    });
-  }
-};
 
 exports.updateProfile = async (req, res) => {
   try {
@@ -91,10 +51,12 @@ exports.updateProfile = async (req, res) => {
     if (req?.files?.profileImage) {
       storagePath = getStoragePath(req?.files?.profileImage);
     }
+
+
     if (req.files && req.files.profileImage) {
       const file = req.files.profileImage;
       await file.mv(storagePath);
-      profileImage = storagePath;
+      profileImage = file?.name;
     }
     const updateBody = {};
     if (userName) {
@@ -129,14 +91,14 @@ exports.updatePassword = async (req, res) => {
     }
     const { userId } = req.params;
     const { oldPassword, newPassword } = req.body;
-    const user = await adminService.checkUserById(userId);
+    const user = await commonService.checkUserById(userId);
     if (!user) {
       return res.status(400).send({
         message: `Invalid  password`,
       });
     }
     let isMatched = await user.isPasswordMatch(oldPassword);
-    console.log(isMatched, "iMatch");
+   
     if (!isMatched) {
       return res.status(400).send({
         message: `Invalid password`,

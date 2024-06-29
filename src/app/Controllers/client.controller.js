@@ -1,12 +1,12 @@
 const httpStatus = require("http-status");
-const { clientService } = require("../services");
+const { clientService, commonService } = require("../services");
 const { getStoragePath } = require("../../helpers/storageUtil");
 const { roles, Roles } = require("../../helpers/roles");
 
 exports.createClient = async (req, res) => {
   try {
     const { email } = req.body;
-    const isUserExist = await clientService.checkUserExist(email);
+    const isUserExist = await commonService.checkUserExist(email);
     if (isUserExist) {
       return res
         .status(httpStatus.UNPROCESSABLE_ENTITY)
