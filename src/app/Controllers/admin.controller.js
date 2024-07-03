@@ -12,6 +12,7 @@ const path = require("path");
 const { getStoragePath } = require("../../helpers/storageUtil");
 const { validationResult } = require("express-validator");
 const { hashPassword } = require("../services/admin.service");
+const { Roles } = require("../../helpers/roles");
 //Managers
 
 // ************ SIGN UP ************ //
@@ -38,13 +39,15 @@ exports.signup = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
+    const user = req?.tokenData;
+    const { userId } = user||{}
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res
         .status(httpStatus.BAD_REQUEST)
         .json({ errors: errors.array() });
     }
-    const { userId } = req.params;
+    
     const { userName } = req.body;
     let profileImage;
     let storagePath;
@@ -89,7 +92,8 @@ exports.updatePassword = async (req, res) => {
         .status(httpStatus.BAD_REQUEST)
         .json({ errors: errors.array() });
     }
-    const { userId } = req.params;
+    const {userId} = req?.tokenData ||{};
+   
     const { oldPassword, newPassword } = req.body;
     const user = await commonService.checkUserById(userId);
     if (!user) {
@@ -127,15 +131,23 @@ exports.deleteAdmin = async (req, res) => {
        .status(httpStatus.BAD_REQUEST)
        .json({ errors: errors.array() });
     }
-    const { userId } = req.params;
-    const user = await adminService.checkUserById(userId);
+    const {userId} = req?.tokenData ||{};
+    const user = await commonService.checkUserById(userId);
+    
     if (!user) {
       return res.status(400).send({
-        message: `Invalid  password`,
+        message: `User not found`,
       });
     }
+    if (user.role !== Roles.SuperAdmin) {
+      return res.status(400).send({
+        message: `You are not a SuperAdmin, you can't delete an admin`,
+      });
+    }
+
+
     const updateBody = {};
-    updateBody.isDeleted = 1;
+    updateBody.isDeleted = req?.body?.isDeleted;
     const updatedUser = await adminService.updateProfile(userId, updateBody);
     res.status(httpStatus.OK).json(updatedUser);
   } catch (error) {

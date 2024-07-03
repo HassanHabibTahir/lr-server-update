@@ -22,8 +22,16 @@ router.delete(
   clientController.deleteClient
 );
 
+
 router.put(
-  "/update/:userId",
+  "/updatePassword",
+  [clientValidator.updatePassword, errorMsgs],
+  client,
+  clientController.updatePassword
+);
+
+router.put(
+  "/update",
   [clientValidator.updateProfile, errorMsgs],
   client,
   clientController.updateProfile

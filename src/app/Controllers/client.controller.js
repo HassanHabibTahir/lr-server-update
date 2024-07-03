@@ -2,18 +2,20 @@ const httpStatus = require("http-status");
 const { clientService, commonService } = require("../services");
 const { getStoragePath } = require("../../helpers/storageUtil");
 const { roles, Roles } = require("../../helpers/roles");
-
+const bcrypt = require("bcrypt");
+const { hashPassword } = require("../services/admin.service");
 exports.createClient = async (req, res) => {
   try {
-    const { email } = req.body;
-    const isUserExist = await commonService.checkUserExist(email);
+    const body = req.body;
+    const isUserExist = await commonService.checkUserExist(body?.email);
     if (isUserExist) {
       return res
         .status(httpStatus.UNPROCESSABLE_ENTITY)
         .json({ message: "Email address already exists!" });
     }
-    req.body.role=Roles.CLIENT          
-    const user = await clientService.addUser(req.body);
+    body.role = Roles.CLIENT;
+    body.password = body?.contact;
+    const user = await clientService.addClient(req.body);
     res.status(httpStatus.CREATED).send(user);
   } catch (error) {
     console.error(`Catch Error: in add User => ${error}`);
@@ -25,10 +27,9 @@ exports.createClient = async (req, res) => {
 exports.getAllClient = async (req, res) => {
   try {
     const data = {
-      
-        role: Roles.CLIENT,
-      };
-    
+      role: Roles.CLIENT,
+    };
+
     const users = await clientService.getAllClients(data);
     res.status(httpStatus.OK).send(users);
   } catch (error) {
@@ -59,7 +60,7 @@ exports.deleteClient = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const {userId} = req?.tokenData ||{};
     let profileImage;
     let storagePath;
     if (req?.files?.profileImage) {
@@ -73,7 +74,7 @@ exports.updateProfile = async (req, res) => {
     const updateBody = {
       ...req.body,
     };
-   
+
     if (profileImage) {
       updateBody.profileImage = profileImage;
     }
@@ -83,5 +84,38 @@ exports.updateProfile = async (req, res) => {
     return res
       .status(httpStatus.INTERNAL_SERVER_ERROR)
       .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+
+exports.updatePassword = async (req, res) => {
+  try { 
+    const {userId} = req?.tokenData ||{};
+    const { oldPassword, newPassword } = req.body;
+    const user = await commonService.checkUserById(userId);
+    if (!user) {
+      return res.status(400).send({
+        message: `Invalid  password`,
+      });
+    }
+    let isMatched = await user.isPasswordMatch(oldPassword);
+   
+    if (!isMatched) {
+      return res.status(400).send({
+        message: `Invalid password`,
+      });
+    }
+    const updateBody = {};
+    if (newPassword) {
+      updateBody.password = await hashPassword(newPassword);
+    }
+    const updatedUser = await clientService.updateProfile(userId, updateBody);
+    res.status(httpStatus.OK).json(updatedUser);
+  } catch (error) {
+    if (error) {
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message });
+    }
   }
 };

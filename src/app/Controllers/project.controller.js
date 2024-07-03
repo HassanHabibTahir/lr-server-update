@@ -2,22 +2,6 @@
 const httpStatus = require("http-status");
 const projectService = require("../services/project.service");
 
-// Check if a project exists
-exports.checkProjectExist = async (req, res) => {
-  try {
-    const { title } = req.params;
-    const projectExists = await projectService.checkProjectExist(title);
-    res.status(httpStatus.OK).json({ exists: projectExists });
-  } catch (error) {
-    console.error(`Catch Error: in checkProjectExist => ${error}`);
-    res
-      .status(httpStatus.INTERNAL_SERVER_ERROR)
-      .json({
-        message: "Failed to check project existence",
-        error: error.message,
-      });
-  }
-};
 
 // Create a new project
 exports.createProject = async (req, res) => {

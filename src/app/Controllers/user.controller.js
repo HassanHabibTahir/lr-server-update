@@ -60,7 +60,7 @@ exports.getAllUsers = async (req, res) => {
 
   exports.updateProfile = async (req, res) => {
     try{
-      const { userId } = req.params;
+      const { userId } = req?.tokenData;
       let profileImage;
       let storagePath;
       if (req?.files?.profileImage) {

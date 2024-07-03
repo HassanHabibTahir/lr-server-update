@@ -8,7 +8,6 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
     trim: true,
     // minlength: 8,
     // validate(value) {
@@ -62,9 +61,12 @@ const userSchema = new mongoose.Schema({
   typeRole: {
     type: String,
   },
-  jobType: {
+  clientType: {
     type: String,
     enum: ["monthly", "project-based"],
+  },
+  employeeType:{
+    type: String,
   },
   salary: {
     type: Number,
@@ -76,6 +78,9 @@ const userSchema = new mongoose.Schema({
     type: Number,
   },
   country: {
+    type: String,
+  },
+  city:{
     type: String,
   },
   clientSource: {

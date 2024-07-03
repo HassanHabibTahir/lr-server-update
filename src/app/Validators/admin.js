@@ -17,17 +17,14 @@ exports.signup = [
   body("profileImage").optional().isString().trim(),
 ];
 
-exports.login = [
-  body("email").notEmpty().isString(),
-  body("password").notEmpty().isString(),
-];
+
 
 exports.updateProfile = [
-  param("userId")
-    .notEmpty()
-    .withMessage("User ID is required")
-    .isMongoId()
-    .withMessage("Invalid user ID"),
+  // param("userId")
+  //   .notEmpty()
+  //   .withMessage("User ID is required")
+  //   .isMongoId()
+  //   .withMessage("Invalid user ID"),
   body("userName")
     .optional()
     .isString()
@@ -43,22 +40,17 @@ exports.updateProfile = [
 ];
 
 exports.updatePassword = [
-  param("userId")
-    .notEmpty()
-    .withMessage("User ID is required")
-    .isMongoId()
-    .withMessage("Invalid user ID"),
   body("oldPassword")
     .notEmpty()
-    .isLength({ min: 8 })
-    .withMessage("Password must be at least 8 characters long")
-    .custom(passwordValidator),
+    // .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 characters long"),
+    // .custom(passwordValidator),
   
   body("newPassword")
     .notEmpty()
-    .isLength({ min: 8 })
+    // .isLength({ min: 4 })
     .withMessage("Password must be at least 8 characters long")
-    .custom(passwordValidator),
+    // .custom(passwordValidator),
   
 ];
 

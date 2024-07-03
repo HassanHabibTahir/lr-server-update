@@ -18,20 +18,19 @@ router.post(
   adminController.signup
 );
 router.put(
-  "/update/:userId",
+  "/update",
   [adminValidator.updateProfile, errorMsgs],
   admin,
   adminController.updateProfile
 );
 router.put(
-  "/updatePassword/:userId",
+  "/updatePassword",
   [adminValidator.updatePassword, errorMsgs],
   admin,
   adminController.updatePassword
 );
 router.put(
-  "/delete/:userId",
-  [adminValidator.deleteAdmin, errorMsgs],
+  "/delete",
   admin,
   adminController.deleteAdmin
 );

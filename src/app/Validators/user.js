@@ -33,22 +33,10 @@ exports.createUser = [
     .withMessage("Contact number must be a string")
     .isLength({ min: 10, max: 15 })
     .withMessage("Contact number must be between 10 and 15 characters"),
-  //   body('profileImage')
-  //     .optional()
-  //     .isString()
-  //     .withMessage('Profile Image URL must be a string')
-  //     .trim()
-  //     .isURL()
-  //     .withMessage('Profile Image URL must be a valid URL'),
-  //   body('typeRole')
-  //     .notEmpty()
-  //     .withMessage('Type Role is required')
-  //     .isString()
-  //     .withMessage('Type Role must be a string'),
-  body("jobType")
+  body("employeeType")
     .notEmpty()
-    .withMessage("Job Type is required")
-    .isIn(["monthly", "project-based"])
+    .withMessage("Employee Type is required")
+    .isString()
     .withMessage('Job Type must be either "monthly" or "project-based"'),
 ];
 
@@ -61,11 +49,6 @@ exports.deleteUser = [
 ];
 
 exports.updateProfile = [
-  param("userId")
-    .notEmpty()
-    .withMessage("User ID is required")
-    .isMongoId()
-    .withMessage("Invalid user ID"),
   body("firstName")
     .optional()
     .isString()
@@ -83,14 +66,16 @@ exports.updateProfile = [
       return true;
     })
     .withMessage("Invalid profile image"),
-    body().custom((value, { req }) => {
-      const allowedFields = ["firstName", "lastName","contact","profileImage"];
-      const unknownFields = Object.keys(req.body).filter(field => !allowedFields.includes(field));
-      if (unknownFields.length > 0) {
-        throw new Error(`This field is not allowed: ${unknownFields.join(', ')}`);
-      }
-      return true;
-    }),
+  body().custom((value, { req }) => {
+    const allowedFields = ["firstName", "lastName", "contact", "profileImage"];
+    const unknownFields = Object.keys(req.body).filter(
+      (field) => !allowedFields.includes(field)
+    );
+    if (unknownFields.length > 0) {
+      throw new Error(`This field is not allowed: ${unknownFields.join(", ")}`);
+    }
+    return true;
+  }),
 ];
 exports.deactivateUser = [
   param("userId")
