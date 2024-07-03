@@ -145,7 +145,6 @@ exports.deleteAdmin = async (req, res) => {
       });
     }
 
-
     const updateBody = {};
     updateBody.isDeleted = req?.body?.isDeleted;
     const updatedUser = await adminService.updateProfile(userId, updateBody);

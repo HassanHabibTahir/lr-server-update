@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const getStoragePath = (file) => {
-  const storagePath = path.join(__dirname, '../', '/storage/images',file?.name); 
+  const storagePath = path.join(__dirname, '../', '/storage/images',JSON.stringify(file?.name)); 
 
   // // Ensure the storage path directory exists
   // if (!fs.existsSync(storagePath)){
