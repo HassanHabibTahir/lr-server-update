@@ -5,6 +5,7 @@ const user = require('./user');
 const client = require('./client');
 const project = require('./project');
 const auth = require('./auth');
+const task = require('./task');
 
 module.exports = function (app) {
 	app.use("/api/images", express.static(path.join("src/storage/images")));
@@ -13,6 +14,7 @@ module.exports = function (app) {
 	app.use('/api/user', user);
 	app.use('/api/client', client)
 	app.use('/api/project', project)
+	app.use('/api/task', task);
 	
 
 

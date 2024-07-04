@@ -22,6 +22,9 @@ const updateProfile = async (userId,userBody) => {
   const updatedUser = await User.findByIdAndUpdate(userId, userBody, {
     new: true,
   });
+  if (!updatedUser) {
+    return { error: `User with ID ${projectId} not found` };
+  }
   return updatedUser;
 };
 

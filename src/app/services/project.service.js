@@ -17,8 +17,10 @@ const getAllProjects = async () => {
 
 // Update project details
 const updateProject = async (projectId, projectData) => {
-
   const updatedProject = await Project.findByIdAndUpdate(projectId, projectData, { new: true });
+  if (!updatedProject) {
+    return { error: `Project with ID ${projectId} not found` };
+  }
   return updatedProject;
 };
 

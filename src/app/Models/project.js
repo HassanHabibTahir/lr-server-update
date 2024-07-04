@@ -15,7 +15,11 @@ const projectSchema = new Schema({
     type: String,
     enum: ['In-Discussion', 'Approved', 'In-Development', 'Review', 'Completed'],
     default: 'In-Discussion'
-  }
+  },
+   clientId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
 });
 
 const Project = mongoose.model('Project', projectSchema);
