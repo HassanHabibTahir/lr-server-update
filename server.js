@@ -3,7 +3,7 @@ const fileUpload = require("express-fileupload");
 const http = require("http");
 const constants = require("./config/constants");
 const app = express();
-
+const cors = require("cors");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
 const adminRoutes = require("./src/routes/admin.js"); // Adjust the path as necessary
@@ -22,7 +22,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(adminRoutes);
-
+app.use(cors())
 db = require("./config/database.js");
 
 // Allow headers

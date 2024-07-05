@@ -40,7 +40,7 @@ const { Roles } = require("../../helpers/roles");
 
 const validateToken = (requiredRole) => {
   return async (req, res, next) => {
-    const token = req.header(constants.USER_TOKEN_NAME);
+    const token = req.header('Authorization');
     if (!token)
       return res.status(401).send("Access denied. Invalid token provided.");
 
