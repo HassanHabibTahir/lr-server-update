@@ -28,8 +28,14 @@ const updateProfile = async (userId, userBody) => {
   return updatedUser;
 };
 
-const deleteClient = async (id) => {
-  return User.findByIdAndDelete(id);
+const deleteClient = async (id,userBody) => {
+  const deleteClient = await User.findByIdAndUpdate(id, userBody, {
+    new: true,
+  });
+  if (!deleteClient) {
+    return { error: `Client with ID ${id} not found` };
+  }
+  return deleteClient;
 };
 
 module.exports = {

@@ -16,12 +16,12 @@ exports.login = async function (req, res) {
           message: `Invalid password`,
         });
       }
-      if (user.is_deleted == 1) {
+      if (user.isDeleted == 1) {
         return res.status(400).json({
           message: `User no longer exits.`,
         });
       }
-      user.last_login = new Date();
+      user.lastLoginDate = new Date();
       await user.save();
       let userData = user.toJSON();
       let loginInfo = await auth_helpers.generateLoginInfo(userData);

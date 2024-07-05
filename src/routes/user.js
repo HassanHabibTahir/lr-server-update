@@ -3,13 +3,13 @@ const router = express.Router();
 const { userController } = require("../app/Controllers");
 const userValidator = require("../app/Validators/user");
 const commonValidators = require("../app/Validators/commonValidators");
+const { Admin, User } = require("../app/Middleware/user");
 const errorMsgs = commonValidators.responseValidationResults;
-const admin = require("../app/Middleware/admin");
-const user = require("../app/Middleware/user");
+
 router.post(
   "/create",
   [userValidator.createUser, errorMsgs],
-  admin,
+  Admin,
   userController.createUser
 );
 
@@ -18,21 +18,21 @@ router.get("/getAll", userController.getAllUsers);
 router.delete(
   "/delete/:userId",
   [userValidator.deleteUser],
-  admin,
+  Admin,
   userController.deleteUser
 );
 
 router.put(
   "/update",
   [userValidator.updateProfile, errorMsgs],
-  user,
+  User,
   userController.updateProfile
 );
 
 router.put(
   "/block-user/:userId",
   [userValidator.deactivateUser, errorMsgs],
-  admin,
+  Admin,
   userController.blockActivateUser
 );
 

@@ -28,6 +28,7 @@ exports.getAllClient = async (req, res) => {
   try {
     const data = {
       role: Roles.CLIENT,
+      isDeleted:0
     };
 
     const users = await clientService.getAllClients(data);
@@ -43,13 +44,13 @@ exports.getAllClient = async (req, res) => {
 exports.deleteClient = async (req, res) => {
   try {
     const { userId } = req.params;
-    const deletedUser = await clientService.deleteUser(userId);
+    const deletedUser = await clientService.deleteClient(userId,req.body);
     if (!deletedUser) {
       return res
         .status(httpStatus.NOT_FOUND)
         .json({ message: "User not found" });
     }
-    res.status(httpStatus.OK).json({ message: "User deleted successfully" });
+    res.status(httpStatus.OK).json({ message: "User deleted successfully",deletedUser });
   } catch (error) {
     console.error(`Catch Error: in deleteUser => ${error}`);
     return res
@@ -78,8 +79,8 @@ exports.updateProfile = async (req, res) => {
     if (profileImage) {
       updateBody.profileImage = profileImage;
     }
-    const updatedUser = await clientService.updateProfile(userId, updateBody);
-    res.status(httpStatus.OK).json(updatedUser);
+    const updated = await clientService.updateProfile(userId, updateBody);
+    res.status(httpStatus.OK).json(updated);
   } catch (error) {
     return res
       .status(httpStatus.INTERNAL_SERVER_ERROR)

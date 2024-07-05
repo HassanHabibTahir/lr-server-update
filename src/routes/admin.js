@@ -9,7 +9,7 @@ const router = express.Router();
 const commonValidators = require("../app/Validators/commonValidators");
 const adminValidator = require("../app/Validators/admin");
 const { adminController } = require("../app/Controllers");
-const admin = require("../app/Middleware/admin");
+const { Admin } = require("../app/Middleware/user");
 
 const errorMsgs = commonValidators.responseValidationResults;
 router.post(
@@ -20,18 +20,19 @@ router.post(
 router.put(
   "/update",
   [adminValidator.updateProfile, errorMsgs],
-  admin,
+  Admin,
   adminController.updateProfile
 );
 router.put(
   "/updatePassword",
   [adminValidator.updatePassword, errorMsgs],
-  admin,
+  Admin,
   adminController.updatePassword
 );
 router.put(
-  "/delete",
-  admin,
+  "/delete/:id",
+  [adminValidator.deleteAdmin, errorMsgs],
+  Admin,
   adminController.deleteAdmin
 );
 

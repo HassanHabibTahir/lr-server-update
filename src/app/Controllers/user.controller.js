@@ -26,7 +26,9 @@ exports.createUser = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
     try {
       let data = {
-        role:Roles.USER
+        role:Roles.USER,
+        isDeleted:0
+        
       }
       const users = await userService.getAllUsers(data);
       res.status(httpStatus.OK).send(users);
@@ -42,13 +44,13 @@ exports.getAllUsers = async (req, res) => {
     try {
       const { userId } = req.params;
       
-      const deletedUser = await userService.deleteUser(userId);
+      const deletedUser = await userService.deleteUser(userId,req?.body);
       if (!deletedUser) {
         return res
           .status(httpStatus.NOT_FOUND)
           .json({ message: "User not found" });
       }
-      res.status(httpStatus.OK).json({ message: "User deleted successfully" });
+      res.status(httpStatus.OK).json({ message: "User deleted successfully",deletedUser });
     } catch (error) {
       console.error(`Catch Error: in deleteUser => ${error}`);
       return res

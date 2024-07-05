@@ -7,18 +7,19 @@ const admin = require("../app/Middleware/admin");
 const client = require("../app/Middleware/client");
 
 const { clientController } = require("../app/Controllers");
+const { Admin,Client } = require("../app/Middleware/user");
 const errorMsgs = commonValidators.responseValidationResults;
 router.post(
   "/create",
   [clientValidator.createClient, errorMsgs],
-  admin,
+  Admin,
   clientController.createClient
 );
 router.get("/allClients", clientController.getAllClient);
 router.delete(
   "/delete/:userId",
   [clientValidator.deleteClient],
-  admin,
+  Admin,
   clientController.deleteClient
 );
 
@@ -26,14 +27,14 @@ router.delete(
 router.put(
   "/updatePassword",
   [clientValidator.updatePassword, errorMsgs],
-  client,
+  Client,
   clientController.updatePassword
 );
 
 router.put(
   "/update",
   [clientValidator.updateProfile, errorMsgs],
-  client,
+  Client,
   clientController.updateProfile
 );
 module.exports = router;

@@ -139,15 +139,14 @@ exports.deleteAdmin = async (req, res) => {
         message: `User not found`,
       });
     }
-    if (user.role !== Roles.SuperAdmin) {
-      return res.status(400).send({
-        message: `You are not a SuperAdmin, you can't delete an admin`,
-      });
-    }
-
+    // if (user.role !== Roles.SuperAdmin) {
+    //   return res.status(400).send({
+    //     message: `You are not a SuperAdmin, you can't delete an admin`,
+    //   });
+    // }
     const updateBody = {};
     updateBody.isDeleted = req?.body?.isDeleted;
-    const updatedUser = await adminService.updateProfile(userId, updateBody);
+    const updatedUser = await adminService.updateProfile(req.params.id, updateBody);
     res.status(httpStatus.OK).json(updatedUser);
   } catch (error) {
     if (error) {

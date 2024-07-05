@@ -28,8 +28,14 @@ const updateProfile = async (userId,userBody) => {
   return updatedUser;
 };
 
-const deleteUser = async (id) => {
-  return User.findByIdAndDelete(id);
+const deleteUser = async (id,userBody) => {
+  const deleteClient = await User.findByIdAndUpdate(id, userBody, {
+    new: true,
+  });
+  if (!deleteClient) {
+    return { error: `Client with ID ${id} not found` };
+  }
+  return deleteClient;
 };
 
 const blockActivateUser = async (userId,isActive) => {
