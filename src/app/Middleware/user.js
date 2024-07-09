@@ -47,7 +47,7 @@ const validateToken = (requiredRole) => {
     try {
       const { data } = jwt.verify(token, app_constants.APP_SECRET);
       const user = await userService.getUserInfo(data.userId);
-       console.log(user,"user",requiredRole)
+     
       if (user?.role !== requiredRole) {
         return res
           .status(401)

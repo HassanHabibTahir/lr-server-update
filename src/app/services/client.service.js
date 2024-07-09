@@ -17,7 +17,12 @@ const addClient = async (body) => {
 const getAllClients = async (data) => {
   return User.find(data);
 };
+// get Client by ID
 
+const getClientById = async (id) => {
+  const client = await User.findById(id);
+  return client? client : false;
+};
 const updateProfile = async (userId, userBody) => {
   const updatedUser = await User.findByIdAndUpdate(userId, userBody, {
     new: true,
@@ -29,13 +34,18 @@ const updateProfile = async (userId, userBody) => {
 };
 
 const deleteClient = async (id,userBody) => {
-  const deleteClient = await User.findByIdAndUpdate(id, userBody, {
-    new: true,
-  });
-  if (!deleteClient) {
-    return { error: `Client with ID ${id} not found` };
-  }
-  return deleteClient;
+const client = await User.findById(id);
+if (!client) {
+  return { error: `Client with ID ${id} not found` };
+}
+const update = { isDeleted: true };
+
+const deleteClient = await User.findByIdAndUpdate(id, update, {
+  new: true,
+});
+
+return deleteClient;
+
 };
 
 module.exports = {
@@ -45,4 +55,5 @@ module.exports = {
   updateProfile,
   deleteClient,
   getUserInfo,
+  getClientById
 };

@@ -43,8 +43,8 @@ exports.getAllClient = async (req, res) => {
 
 exports.deleteClient = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const deletedUser = await clientService.deleteClient(userId,req.body);
+    const { clientId } = req.params;
+    const deletedUser = await clientService.deleteClient(clientId);
     if (!deletedUser) {
       return res
         .status(httpStatus.NOT_FOUND)
@@ -118,5 +118,24 @@ exports.updatePassword = async (req, res) => {
         .status(httpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: error.message });
     }
+  }
+};
+// get Single Client
+
+exports.getClientById = async (req, res) => {
+  try {
+    const { clientId } = req.params;
+    const user = await clientService.getClientById(clientId);
+    if (!user) {
+      return res.status(404).send({
+        message: `User not found`,
+      });
+    }
+    res.status(200).send(user);
+  } catch (error) {
+    console.error(`Catch Error: in getClientById => ${error}`);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };

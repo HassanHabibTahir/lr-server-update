@@ -13,11 +13,12 @@ router.post(
   userController.createUser
 );
 
-router.get("/getAll", userController.getAllUsers);
+router.get("/", userController.getAllUsers);
+router.get("/:userId",[userValidator.userId, errorMsgs],userController.getUserById);
 
 router.delete(
   "/delete/:userId",
-  [userValidator.deleteUser],
+  [userValidator.userId],
   Admin,
   userController.deleteUser
 );
@@ -31,7 +32,7 @@ router.put(
 
 router.put(
   "/block-user/:userId",
-  [userValidator.deactivateUser, errorMsgs],
+  [userValidator.userId, errorMsgs],
   Admin,
   userController.blockActivateUser
 );

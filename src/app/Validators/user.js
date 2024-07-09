@@ -40,7 +40,7 @@ exports.createUser = [
     .withMessage('Job Type must be either "monthly" or "project-based"'),
 ];
 
-exports.deleteUser = [
+exports.userId = [
   param("userId")
     .notEmpty()
     .withMessage("User ID is required")
@@ -76,11 +76,4 @@ exports.updateProfile = [
     }
     return true;
   }),
-];
-exports.deactivateUser = [
-  param("userId")
-    .notEmpty()
-    .withMessage("User ID is required")
-    .isMongoId()
-    .withMessage("Invalid user ID"),
 ];

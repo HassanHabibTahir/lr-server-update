@@ -95,13 +95,14 @@ exports.updateProfile = [
   }),
 ];
 
-exports.deleteClient = [
-  param("userId")
+exports.clientId = [
+  param("clientId")
     .notEmpty()
-    .withMessage("User ID is required")
+    .withMessage("Client ID is required")
     .isMongoId()
     .withMessage("Invalid user ID"),
 ];
+
 exports.updatePassword = [
   body("oldPassword")
     .notEmpty()

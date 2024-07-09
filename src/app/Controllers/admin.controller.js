@@ -144,9 +144,8 @@ exports.deleteAdmin = async (req, res) => {
     //     message: `You are not a SuperAdmin, you can't delete an admin`,
     //   });
     // }
-    const updateBody = {};
-    updateBody.isDeleted = req?.body?.isDeleted;
-    const updatedUser = await adminService.updateProfile(req.params.id, updateBody);
+    
+    const updatedUser = await adminService.deleteAdmin(req.params.id);
     res.status(httpStatus.OK).json(updatedUser);
   } catch (error) {
     if (error) {

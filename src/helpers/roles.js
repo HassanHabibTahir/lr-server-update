@@ -11,6 +11,7 @@ const allRoles = {
     SuperAdmin: 'superAdmin',
     USER: 'user',
     CLIENT: 'client',
+    
   }
   const roles = Object.keys(allRoles);
   const roleRights = new Map(Object.entries(allRoles));

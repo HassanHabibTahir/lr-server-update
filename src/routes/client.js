@@ -16,9 +16,10 @@ router.post(
   clientController.createClient
 );
 router.get("/allClients", clientController.getAllClient);
+router.get("/:clientId",[clientValidator.clientId, errorMsgs],clientController.getClientById);
 router.delete(
-  "/delete/:userId",
-  [clientValidator.deleteClient],
+  "/delete/:clientId",
+  [clientValidator.clientId,errorMsgs],
   Admin,
   clientController.deleteClient
 );

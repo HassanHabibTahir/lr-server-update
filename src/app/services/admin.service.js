@@ -26,6 +26,23 @@ const updateProfile = async (userId,userBody) => {
   return updatedUser;
 };
 
+
+
+const deleteAdmin = async (id) => {
+  const admin = await User.findById(id);
+  if (!admin) {
+    return { error: `Client with ID ${id} not found` };
+  }
+  const update = { isDeleted: true };
+  
+  const deleteAdmin = await User.findByIdAndUpdate(id, update, {
+    new: true,
+  });
+  
+  return deleteAdmin;
+  
+  };
+
 const updatePassword = async (userId,userBody) => {
   const updatedUser = await User.findByIdAndUpdate(userId, userBody, {
     new: true,
@@ -39,5 +56,6 @@ module.exports = {
   singUp,
   updateProfile,
   hashPassword,
-  updatePassword
+  updatePassword,
+  deleteAdmin
 };

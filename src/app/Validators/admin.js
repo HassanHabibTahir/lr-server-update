@@ -57,7 +57,7 @@ exports.updatePassword = [
 exports.deleteAdmin=[
   param("id")
    .notEmpty()
-   .withMessage("User ID is required")
+   .withMessage("Admin ID is required")
    .isMongoId()
-   .withMessage("Invalid user ID"),
+   .withMessage("Invalid Admin ID"),
 ]

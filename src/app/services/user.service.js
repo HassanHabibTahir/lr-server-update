@@ -28,19 +28,29 @@ const updateProfile = async (userId,userBody) => {
   return updatedUser;
 };
 
-const deleteUser = async (id,userBody) => {
-  const deleteClient = await User.findByIdAndUpdate(id, userBody, {
-    new: true,
-  });
-  if (!deleteClient) {
-    return { error: `Client with ID ${id} not found` };
-  }
-  return deleteClient;
+const deleteUser = async (id) => {
+  const user = await User.findById(id);
+if (!user) {
+  return { error: `Client with ID ${id} not found` };
+}
+const update = { isDeleted: true };
+
+const deleteUser = await User.findByIdAndUpdate(id, update, {
+  new: true,
+});
+
+return deleteUser;
 };
 
 const blockActivateUser = async (userId,isActive) => {
   return User.findByIdAndUpdate(userId, { isActive: isActive }, { new: true });
 
+};
+
+// getUserById
+const getUserById = async (id) => {
+  const client = await User.findById(id);
+  return client? client : false;
 };
 
 module.exports = {
@@ -50,6 +60,7 @@ module.exports = {
   updateProfile,
   deleteUser,
   blockActivateUser,
-  getUserInfo
+  getUserInfo,
+  getUserById
  
 };

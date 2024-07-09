@@ -44,7 +44,7 @@ exports.getAllUsers = async (req, res) => {
     try {
       const { userId } = req.params;
       
-      const deletedUser = await userService.deleteUser(userId,req?.body);
+      const deletedUser = await userService.deleteUser(userId);
       if (!deletedUser) {
         return res
           .status(httpStatus.NOT_FOUND)
@@ -110,3 +110,19 @@ exports.getAllUsers = async (req, res) => {
         .json({ message: "Internal server error", error: error.message });
     }
   };
+  exports.getUserById=async (req,res)=>{
+    try{
+      const { userId } = req.params;
+      const user = await userService.getUserById(userId);
+      if (!user) {
+        return res
+         .status(httpStatus.NOT_FOUND)
+         .json({ message: "User not found" });
+      }
+      res.status(httpStatus.OK).send(user);
+    }catch(error){
+      return res
+       .status(httpStatus.INTERNAL_SERVER_ERROR)
+       .json({ message: "Internal server error", error: error.message });
+    }
+  }
