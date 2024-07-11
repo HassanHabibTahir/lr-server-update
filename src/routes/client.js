@@ -3,39 +3,41 @@ const router = express.Router();
 
 const clientValidator = require("../app/Validators/client");
 const commonValidators = require("../app/Validators/commonValidators");
-const admin = require("../app/Middleware/admin");
-const client = require("../app/Middleware/client");
 
 const { clientController } = require("../app/Controllers");
-const { Admin,Client } = require("../app/Middleware/user");
+const { Admin, Client, AdminOrSuperAdmin, AdminOrSuperAdminOrClient } = require("../app/Middleware/user");
 const errorMsgs = commonValidators.responseValidationResults;
 router.post(
   "/create",
   [clientValidator.createClient, errorMsgs],
-  Admin,
+  AdminOrSuperAdmin,
   clientController.createClient
 );
-router.get("/allClients", clientController.getAllClient);
-router.get("/:clientId",[clientValidator.clientId, errorMsgs],clientController.getClientById);
+router.get("/allClients",AdminOrSuperAdmin, clientController.getAllClient);
+router.get(
+  "/:id",
+  [clientValidator.clientId, errorMsgs],
+  AdminOrSuperAdmin,
+  clientController.getClientById
+);
 router.delete(
-  "/delete/:clientId",
-  [clientValidator.clientId,errorMsgs],
-  Admin,
+  "/delete/:id",
+  [clientValidator.clientId, errorMsgs],
+  AdminOrSuperAdmin,
   clientController.deleteClient
 );
 
-
 router.put(
-  "/updatePassword",
+  "/updatePassword/:id",
   [clientValidator.updatePassword, errorMsgs],
-  Client,
+  AdminOrSuperAdminOrClient,
   clientController.updatePassword
 );
 
 router.put(
-  "/update",
+  "/update/:id",
   [clientValidator.updateProfile, errorMsgs],
-  Client,
+  AdminOrSuperAdmin,
   clientController.updateProfile
 );
 module.exports = router;

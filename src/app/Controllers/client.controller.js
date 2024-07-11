@@ -61,7 +61,38 @@ exports.deleteClient = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    const {userId} = req?.tokenData ||{};
+  const {id}= req.params;
+    // let profileImage;
+    // let storagePath;
+    // if (req?.files?.profileImage) {
+    //   storagePath = getStoragePath(req?.files?.profileImage);
+    // }
+    // if (req.files && req.files.profileImage) {
+    //   const file = req.files.profileImage;
+    //   await file.mv(storagePath);
+    //   profileImage = file?.name;
+    // }
+    const updateBody = {
+      ...req.body,
+    };
+
+    // if (profileImage) {
+    //   updateBody.profileImage = profileImage;
+    // }
+    const updated = await clientService.updateProfile(id, updateBody);
+    res.status(httpStatus.OK).json(updated);
+  } catch (error) {
+    return res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+
+
+const updateProfileImage = async(req, res) => {
+  try {
+    const { id } = req.params;
     let profileImage;
     let storagePath;
     if (req?.files?.profileImage) {
@@ -73,27 +104,23 @@ exports.updateProfile = async (req, res) => {
       profileImage = file?.name;
     }
     const updateBody = {
-      ...req.body,
+      profileImage,
     };
-
-    if (profileImage) {
-      updateBody.profileImage = profileImage;
-    }
-    const updated = await clientService.updateProfile(userId, updateBody);
+    const updated = await clientService.updateProfile(id, updateBody);
     res.status(httpStatus.OK).json(updated);
   } catch (error) {
     return res
-      .status(httpStatus.INTERNAL_SERVER_ERROR)
-      .json({ message: "Internal server error", error: error.message });
+     .status(httpStatus.INTERNAL_SERVER_ERROR)
+     .json({ message: "Internal server error", error: error.message });
   }
-};
+}
 
 
 exports.updatePassword = async (req, res) => {
   try { 
-    const {userId} = req?.tokenData ||{};
+    const {id} = req?.params||{};
     const { oldPassword, newPassword } = req.body;
-    const user = await commonService.checkUserById(userId);
+    const user = await commonService.checkUserById(id);
     if (!user) {
       return res.status(400).send({
         message: `Invalid  password`,
@@ -110,7 +137,7 @@ exports.updatePassword = async (req, res) => {
     if (newPassword) {
       updateBody.password = await hashPassword(newPassword);
     }
-    const updatedUser = await clientService.updateProfile(userId, updateBody);
+    const updatedUser = await clientService.updateProfile(id, updateBody);
     res.status(httpStatus.OK).json(updatedUser);
   } catch (error) {
     if (error) {
@@ -124,8 +151,8 @@ exports.updatePassword = async (req, res) => {
 
 exports.getClientById = async (req, res) => {
   try {
-    const { clientId } = req.params;
-    const user = await clientService.getClientById(clientId);
+    const { id } = req.params;
+    const user = await clientService.getClientById(id);
     if (!user) {
       return res.status(404).send({
         message: `User not found`,

@@ -1,7 +1,6 @@
 const express = require("express");
 const { taskController } = require("../app/Controllers");
 const taskValidator = require("../app/Validators/task");
-const admin = require("../app/Middleware/admin");
 const commonValidators = require("../app/Validators/commonValidators");
 const { Admin } = require("../app/Middleware/user");
 const router = express.Router();

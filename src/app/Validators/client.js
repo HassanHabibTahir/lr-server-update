@@ -21,7 +21,7 @@ exports.createClient = [
     .notEmpty()
     .isMobilePhone()
     .isString()
-    .withMessage('Contact must be a valid phone number'),
+    .withMessage("Contact must be a valid phone number"),
 
   body("country")
     .notEmpty()
@@ -55,6 +55,11 @@ exports.createClient = [
 ];
 
 exports.updateProfile = [
+  param("id")
+    .notEmpty()
+    .withMessage("ID is required")
+    .isMongoId()
+    .withMessage("Invalid ID"),
   body("firstName")
     .optional()
     .isString()
@@ -67,10 +72,10 @@ exports.updateProfile = [
     .withMessage("userName must be a string with 3 to 6 characters"),
   body("country").optional().isString().withMessage("Country must be a string"),
   body("contact")
-  .optional()
-  .isMobilePhone()
-  .isString()
-  .withMessage('Contact must be a valid phone number'),
+    .optional()
+    .isMobilePhone()
+    .isString()
+    .withMessage("Contact must be a valid phone number"),
   body("profileImage")
     .optional()
     .custom((value, { req }) => {
@@ -96,24 +101,28 @@ exports.updateProfile = [
 ];
 
 exports.clientId = [
-  param("clientId")
+  param("id")
     .notEmpty()
-    .withMessage("Client ID is required")
+    .withMessage("ID is required")
     .isMongoId()
-    .withMessage("Invalid user ID"),
+    .withMessage("Invalid ID"),
 ];
 
 exports.updatePassword = [
+  param("id")
+    .notEmpty()
+    .withMessage("ID is required")
+    .isMongoId()
+    .withMessage("Invalid ID"),
   body("oldPassword")
     .notEmpty()
     // .isLength({ min: 8 })
     .withMessage("Password must be at least 8 characters long"),
-    // .custom(passwordValidator),
-  
+  // .custom(passwordValidator),
+
   body("newPassword")
     .notEmpty()
     // .isLength({ min: 4 })
-    .withMessage("Password must be at least 8 characters long")
-    // .custom(passwordValidator),
-  
+    .withMessage("Password must be at least 8 characters long"),
+  // .custom(passwordValidator),
 ];

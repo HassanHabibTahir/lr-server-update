@@ -3,7 +3,7 @@ const router = express.Router();
 const { userController } = require("../app/Controllers");
 const userValidator = require("../app/Validators/user");
 const commonValidators = require("../app/Validators/commonValidators");
-const { Admin, User } = require("../app/Middleware/user");
+const { Admin, User, AdminOrSuperAdmin, AdminOrSuperAdminOrEmployee } = require("../app/Middleware/user");
 const errorMsgs = commonValidators.responseValidationResults;
 
 router.post(
@@ -14,7 +14,7 @@ router.post(
 );
 
 router.get("/", userController.getAllUsers);
-router.get("/:userId",[userValidator.userId, errorMsgs],userController.getUserById);
+router.get("/:id",[userValidator.userId, errorMsgs],userController.getUserById);
 
 router.delete(
   "/delete/:userId",
@@ -24,16 +24,21 @@ router.delete(
 );
 
 router.put(
-  "/update",
+  "/update/:id",
   [userValidator.updateProfile, errorMsgs],
-  User,
+  AdminOrSuperAdmin,
   userController.updateProfile
 );
-
+router.put(
+  "/updatePassword/:id",
+  [userValidator.updatePassword, errorMsgs],
+  AdminOrSuperAdminOrEmployee,
+  userController.updatePassword
+);
 router.put(
   "/block-user/:userId",
   [userValidator.userId, errorMsgs],
-  Admin,
+  AdminOrSuperAdmin,
   userController.blockActivateUser
 );
 

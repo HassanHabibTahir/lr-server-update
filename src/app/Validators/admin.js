@@ -17,20 +17,25 @@ exports.signup = [
   body("profileImage").optional().isString().trim(),
 ];
 
-
-
 exports.updateProfile = [
-  // param("userId")
-  //   .notEmpty()
-  //   .withMessage("User ID is required")
-  //   .isMongoId()
-  //   .withMessage("Invalid user ID"),
+  param("id")
+    .notEmpty()
+    .withMessage("ID is required")
+    .isMongoId()
+    .withMessage("Invalid user ID"),
   body("userName")
     .optional()
     .isString()
     .isLength({ min: 5 })
     .withMessage("userName must be a string with 5 to 6 characters"),
+];
 
+exports.updateProfileImage = [
+  param("id")
+    .notEmpty()
+    .withMessage("ID is required")
+    .isMongoId()
+    .withMessage("Invalid user ID"),
   body("profileImage")
     .optional()
     .custom((value, { req }) => {
@@ -40,24 +45,28 @@ exports.updateProfile = [
 ];
 
 exports.updatePassword = [
+  param("id")
+  .notEmpty()
+  .withMessage("ID is required")
+  .isMongoId()
+  .withMessage("Admin ID"),
   body("oldPassword")
     .notEmpty()
     // .isLength({ min: 8 })
     .withMessage("Password must be at least 8 characters long"),
-    // .custom(passwordValidator),
-  
+  // .custom(passwordValidator),
+
   body("newPassword")
     .notEmpty()
     // .isLength({ min: 4 })
-    .withMessage("Password must be at least 8 characters long")
-    // .custom(passwordValidator),
-  
+    .withMessage("Password must be at least 8 characters long"),
+  // .custom(passwordValidator),
 ];
 
-exports.deleteAdmin=[
+exports.Id = [
   param("id")
-   .notEmpty()
-   .withMessage("Admin ID is required")
-   .isMongoId()
-   .withMessage("Invalid Admin ID"),
-]
+    .notEmpty()
+    .withMessage("ID is required")
+    .isMongoId()
+    .withMessage("Invalid ID"),
+];

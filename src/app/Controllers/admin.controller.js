@@ -35,26 +35,65 @@ exports.signup = async (req, res) => {
   }
 };
 
-
-
 exports.updateProfile = async (req, res) => {
   try {
-    const user = req?.tokenData;
-    const { userId } = user||{}
+    const { id } = req.params;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res
         .status(httpStatus.BAD_REQUEST)
         .json({ errors: errors.array() });
     }
-    
+
     const { userName } = req.body;
+    // let profileImage;
+    // let storagePath;
+    // if (req?.files?.profileImage) {
+    //   storagePath = getStoragePath(req?.files?.profileImage);
+    // }
+
+    // if (req.files && req.files.profileImage) {
+    //   const file = req.files.profileImage;
+    //   await file.mv(storagePath);
+    //   profileImage = file?.name;
+    // }
+    const updateBody = {};
+    if (userName) {
+      updateBody.userName = userName;
+    }
+    // if (profileImage) {
+    //   updateBody.profileImage = profileImage;
+    // }
+    // if (userName && profileImage) {
+    //   updateBody.userName = userName;
+    //   updateBody.profileImage = profileImage;
+    // }
+    const updatedUser = await adminService.updateProfile(id, updateBody);
+    res.status(httpStatus.OK).json(updatedUser);
+  } catch (error) {
+    console.log(error, "error");
+    if (error) {
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message });
+    }
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .json({ errors: errors.array() });
+    }
     let profileImage;
     let storagePath;
     if (req?.files?.profileImage) {
       storagePath = getStoragePath(req?.files?.profileImage);
     }
-
 
     if (req.files && req.files.profileImage) {
       const file = req.files.profileImage;
@@ -62,18 +101,12 @@ exports.updateProfile = async (req, res) => {
       profileImage = file?.name;
     }
     const updateBody = {};
-    if (userName) {
-      updateBody.userName = userName;
-    }
+
     if (profileImage) {
       updateBody.profileImage = profileImage;
     }
-    if (userName && profileImage) {
-      updateBody.userName = userName;
-      updateBody.profileImage = profileImage;
-    }
-    const updatedUser = await adminService.updateProfile(userId, updateBody);
-    res.status(httpStatus.OK).json(updatedUser);
+    const user = await adminService.updateProfile(id, updateBody);
+    res.status(httpStatus.OK).json(user);
   } catch (error) {
     console.log(error, "error");
     if (error) {
@@ -92,17 +125,16 @@ exports.updatePassword = async (req, res) => {
         .status(httpStatus.BAD_REQUEST)
         .json({ errors: errors.array() });
     }
-    const {userId} = req?.tokenData ||{};
-   
+    const { id } = req.params;
     const { oldPassword, newPassword } = req.body;
-    const user = await commonService.checkUserById(userId);
+    const user = await commonService.checkUserById(id);
     if (!user) {
       return res.status(400).send({
         message: `Invalid  password`,
       });
     }
     let isMatched = await user.isPasswordMatch(oldPassword);
-   
+
     if (!isMatched) {
       return res.status(400).send({
         message: `Invalid password`,
@@ -128,30 +160,23 @@ exports.deleteAdmin = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res
-       .status(httpStatus.BAD_REQUEST)
-       .json({ errors: errors.array() });
+        .status(httpStatus.BAD_REQUEST)
+        .json({ errors: errors.array() });
     }
-    const {userId} = req?.tokenData ||{};
-    const user = await commonService.checkUserById(userId);
-    
+    const { id } = req.params;
+    const user = await commonService.checkUserById(id);
     if (!user) {
       return res.status(400).send({
         message: `User not found`,
       });
     }
-    // if (user.role !== Roles.SuperAdmin) {
-    //   return res.status(400).send({
-    //     message: `You are not a SuperAdmin, you can't delete an admin`,
-    //   });
-    // }
-    
     const updatedUser = await adminService.deleteAdmin(req.params.id);
     res.status(httpStatus.OK).json(updatedUser);
   } catch (error) {
     if (error) {
       return res
-       .status(httpStatus.INTERNAL_SERVER_ERROR)
-       .json({ message: error.message });
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message });
     }
   }
-}
+};

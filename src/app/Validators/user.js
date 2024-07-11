@@ -6,11 +6,6 @@ exports.createUser = [
     .withMessage("Email is required")
     .isEmail()
     .withMessage("Email must be a valid email address"),
-  body("password")
-    .notEmpty()
-    .withMessage("Password is required")
-    .isString()
-    .withMessage("Password must be a string"),
   body("userName")
     .notEmpty()
     .withMessage("Username is required")
@@ -41,14 +36,19 @@ exports.createUser = [
 ];
 
 exports.userId = [
-  param("userId")
+  param("id")
     .notEmpty()
-    .withMessage("User ID is required")
+    .withMessage("ID is required")
     .isMongoId()
-    .withMessage("Invalid user ID"),
+    .withMessage("Invalid sID"),
 ];
 
 exports.updateProfile = [
+  param("id")
+  .notEmpty()
+  .withMessage("ID is required")
+  .isMongoId()
+  .withMessage("Invalid ID"),
   body("firstName")
     .optional()
     .isString()
@@ -76,4 +76,22 @@ exports.updateProfile = [
     }
     return true;
   }),
+];
+exports.updatePassword = [
+  param("id")
+    .notEmpty()
+    .withMessage("ID is required")
+    .isMongoId()
+    .withMessage("Invalid ID"),
+  body("oldPassword")
+    .notEmpty()
+    // .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 characters long"),
+  // .custom(passwordValidator),
+
+  body("newPassword")
+    .notEmpty()
+    // .isLength({ min: 4 })
+    .withMessage("Password must be at least 8 characters long"),
+  // .custom(passwordValidator),
 ];
