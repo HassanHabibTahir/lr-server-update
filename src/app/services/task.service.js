@@ -1,8 +1,13 @@
-const { Task } = require("../Models");
+const { Task, Comments } = require("../Models");
 
 const checkProjectExist = async (id) => {
   const projectExist = await Task.findById(id);
   return projectExist;
+};
+
+const checkTaskWithToAssigned = async (userId, taskId) => {
+  const taskExist = await Task.findOne({ _id: taskId, assignedTo: userId });
+  return taskExist;
 };
 
 // add Task
@@ -59,7 +64,6 @@ const updateTask = async (taskId, taskData) => {
   return updatedTask;
 };
 
-
 // delete Task
 const deleteTask = async (taskId) => {
   const deletedTask = await Task.findByIdAndDelete(taskId);
@@ -71,26 +75,34 @@ const deleteTask = async (taskId) => {
 
 // get Tasks
 const getAllTasks = async () => {
-
   const tasks = await Task.find({}).populate([
-    { path: 'projectId', select: 'title description' },
-    { path: 'assignedTo', select: 'firstName lastName email' }
-  ]);;
+    { path: "projectId", select: "title description" },
+    { path: "assignedTo", select: "firstName lastName email" },
+    { path: "comments", select: "text author createdAt" },
+  ]);
   return tasks;
 };
-
 
 //get task by id
 
 const getTaskById = async (id) => {
   const task = await Task.findById(id).populate([
-    { path: 'projectId', select: 'title description' },
-    { path: 'assignedTo', select: 'firstName lastName email' }
+    { path: "projectId", select: "title description" },
+    { path: "assignedTo", select: "firstName lastName email" },
+    { path: "comments", select: "text author createdAt" },
   ]);
   return task;
 };
 
-
+const addComment = async (taskId, _comment) => {
+ 
+  const comment = new Comments(_comment);
+  await comment.save();
+  const task = await Task.findById(taskId);
+  task.comments.push(comment?._id);
+  await task.save();
+  return task;
+};
 
 module.exports = {
   checkProjectExist,
@@ -101,5 +113,8 @@ module.exports = {
   deleteTask,
   updateTask,
   getAllTasks,
-  getTaskById
+  getTaskById,
+  addComment,
+  checkTaskWithToAssigned
 };
+

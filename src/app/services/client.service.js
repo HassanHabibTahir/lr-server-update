@@ -33,7 +33,7 @@ const updateProfile = async (userId, userBody) => {
   return updatedUser;
 };
 
-const deleteClient = async (id,userBody) => {
+const deleteClient = async (id) => {
 const client = await User.findById(id);
 if (!client) {
   return { error: `Client with ID ${id} not found` };
