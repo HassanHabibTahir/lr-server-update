@@ -29,6 +29,17 @@ exports.getAllProjects = async (req, res) => {
       .json({ message: "Failed to fetch projects", error: error.message });
   }
 };
+exports.getAllById= async (req, res) => {
+  try {
+    const project = await projectService.getProjectById(req?.params?.id);
+    res.status(httpStatus.OK).json(project);
+  } catch (error) {
+    console.error(`Catch Error: in getAllProjects => ${error}`);
+    res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: "Failed to fetch projects", error: error.message });
+  }
+};
 
 // Update project details
 exports.updateProject = async (req, res) => {

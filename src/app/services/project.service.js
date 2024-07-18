@@ -11,7 +11,13 @@ const addProject = async (projectData) => {
 
 // Retrieve all projects
 const getAllProjects = async () => {
-  const projects = await Project.find();
+ 
+  const projects = await Project.find({});
+  return projects;
+};
+const getProjectById = async (id) => {
+
+  const projects = await Project.findById(id);
   return projects;
 };
 
@@ -33,6 +39,7 @@ const deleteProject = async (projectId) => {
 module.exports = {
   addProject,
   getAllProjects,
+  getProjectById,
   updateProject,
   deleteProject,
 };

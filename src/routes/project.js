@@ -13,7 +13,8 @@ router.post(
   Admin,
   projectController.createProject
 );
-router.get("/allProjects", projectController.getAllProjects);
+router.get("/", projectController.getAllProjects);
+router.get("/:id", projectController.getAllById),
 router.delete(
   "/delete/:projectId",
   [projectValidator.deleteProject, errorMsgs],

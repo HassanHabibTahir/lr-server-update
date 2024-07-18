@@ -43,8 +43,8 @@ exports.getAllClient = async (req, res) => {
 
 exports.deleteClient = async (req, res) => {
   try {
-    const { clientId } = req.params;
-    const deletedUser = await clientService.deleteClient(clientId);
+    const { id } = req.params;
+    const deletedUser = await clientService.deleteClient(id);
     if (!deletedUser) {
       return res
         .status(httpStatus.NOT_FOUND)
