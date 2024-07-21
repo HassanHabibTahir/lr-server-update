@@ -14,56 +14,134 @@ exports.createProject = [
   body("status")
     .notEmpty()
     .withMessage("Status is required")
+    .isIn([
+      "In-Discussion",
+      "Approved",
+      "In-Development",
+      "Review",
+      "Completed",
+    ])
+    .withMessage(
+      "Status must be one of: In-Discussion, Approved, In-Development, Review, Completed"
+    ),
+  body("priority")
+    .notEmpty()
+    .withMessage("Priority is required")
+    .isIn(["Low", "Medium", "High"])
+    .withMessage("Priority must be one of: Low, Medium, High"),
+  body("clientId")
+    .notEmpty()
+    .withMessage("Client ID is required")
+    .isMongoId()
+    .withMessage("Invalid Client ID"),
+  body("notes").optional().isString().withMessage("Invalid Additional notes"),
+  body("startDate")
+    .optional()
     .isString()
-    .withMessage("Status must be a string"),
+    .withMessage("Start Date must be a valid date"),
+  body("completeDate")
+    .optional()
+    .isString()
+    .withMessage("Complete Date must be a valid date"),
+  body("approveDate")
+    .optional()
+    .isString()
+    .withMessage("Approve Date must be a valid date"),
   body().custom((value, { req }) => {
-    const allowedFields = ["title", "description", "status"];
-    const unknownFields = Object.keys(req.body).filter(field => !allowedFields.includes(field));
+    const allowedFields = [
+      "title",
+      "description",
+      "status",
+      "priority",
+      "clientId",
+      "notes",
+      "startDate",
+      "completeDate",
+      "approveDate",
+    ];
+    const unknownFields = Object.keys(req.body).filter(
+      (field) => !allowedFields.includes(field)
+    );
     if (unknownFields.length > 0) {
-      throw new Error(`This field is not allowed: ${unknownFields.join(', ')}`);
+      throw new Error(`This field is not allowed: ${unknownFields.join(", ")}`);
     }
     return true;
   }),
 ];
 
-
 exports.updateProject = [
-    param("projectId")
-      .notEmpty()
-      .withMessage("Project ID is required")
-      .isMongoId()
-      .withMessage("Invalid Project ID"),
-    body("title")
-      .optional()
-      .isString()
-      .isLength({ min: 3 })
-      .withMessage("Title must be a string with at least 3 characters"),
-    body("description")
-      .optional()
-      .isString()
-      .isLength({ min: 3 })
-      .withMessage("Description must be a string with at least 3 characters"),
-    body("status")
-      .optional()
-      .isString()
-      .withMessage("Status must be a string"),
-    body().custom((value, { req }) => {
-      const allowedFields = ["title", "description", "status"];
-      const unknownFields = Object.keys(req.body).filter(
-        (field) => !allowedFields.includes(field)
-      );
-      if (unknownFields.length > 0) {
-        throw new Error(`This field is not allowed: ${unknownFields.join(", ")}`);
-      }
-      return true;
-    }),
-  ];
-  
-  exports.deleteProject = [
-    param("projectId")
-      .notEmpty()
-      .withMessage("Project ID is required")
-      .isMongoId()
-      .withMessage("Invalid Project ID"),
-  ];
-  
+  param("projectId")
+    .notEmpty()
+    .withMessage("Project ID is required")
+    .isMongoId()
+    .withMessage("Invalid Project ID"),
+  body("title")
+    .optional()
+    .isString()
+    .isLength({ min: 3 })
+    .withMessage("Title must be a string with at least 3 characters"),
+  body("description")
+    .optional()
+    .isString()
+    .isLength({ min: 3 })
+    .withMessage("Description must be a string with at least 3 characters"),
+  body("priority")
+    .optional()
+    .isIn(["Low", "Medium", "High"])
+    .withMessage("Priority must be one of: Low, Medium, High"),
+  body("clientId").optional().isMongoId().withMessage("Invalid Client ID"),
+  body("notes").optional().isString().withMessage("Invalid Additional notes"),
+  body("startDate")
+    .optional()
+    .isString()
+    .withMessage("Start Date must be a valid date"),
+  body("completeDate")
+    .optional()
+    .isString()
+    .withMessage("Complete Date must be a valid date"),
+  body("approveDate")
+    .optional()
+    .isString()
+    .withMessage("Approve Date must be a valid date"),
+
+  body("status")
+    .optional()
+    .isIn([
+      "In-Discussion",
+      "Approved",
+      "In-Development",
+      "Review",
+      "Completed",
+    ])
+    .withMessage(
+      "Status must be one of: In-Discussion, Approved, In-Development, Review, Completed"
+    ),
+  body().custom((value, { req }) => {
+    const allowedFields = [
+      "title",
+      "description",
+      "status",
+      "priority",
+      "clientId",
+      "notes",
+      "startDate",
+      "completeDate",
+      "approveDate",
+    ];
+    const unknownFields = Object.keys(req.body).filter(
+      (field) => !allowedFields.includes(field)
+    );
+    if (unknownFields.length > 0) {
+      throw new Error(`This field is not allowed: ${unknownFields.join(", ")}`);
+    }
+    return true;
+  }),
+];
+
+exports.deleteProject = [
+  param("projectId")
+    .notEmpty()
+    .withMessage("Project ID is required")
+    .isMongoId()
+    .withMessage("Invalid Project ID"),
+];
