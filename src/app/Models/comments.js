@@ -5,7 +5,7 @@ const commentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  taskToAssigned: {
+  commentBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,

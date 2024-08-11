@@ -9,3 +9,4 @@
 {"level":"info","message":"Mongoose connected to mongodb+srv://nftthee:nftthee@cluster0.hov9i7k.mongodb.net/"}
 {"level":"info","message":"Mongoose connected to mongodb+srv://nftthee:nftthee@cluster0.hov9i7k.mongodb.net/"}
 {"level":"info","message":"Mongoose connected to mongodb+srv://nftthee:nftthee@cluster0.hov9i7k.mongodb.net/"}
+{"level":"info","message":"Error connecting to MongoDB: Error: queryTxt ETIMEOUT cluster0.hov9i7k.mongodb.net"}

@@ -15,6 +15,7 @@ router.delete("/delete/:id",AdminOrSuperAdmin,[taskValidator.id,errorMsgs], task
 router.get("/", taskController.getTasks)
 router.get("/:id",[taskValidator.id,errorMsgs], taskController.getTaskById)
 router.post("/add-comment/:id",AdminOrSuperAdminOrEmployee,[taskValidator.addComments,errorMsgs],taskController.addComment);
+// add attacthments 
 
 
 

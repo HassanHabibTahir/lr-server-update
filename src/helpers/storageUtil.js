@@ -1,16 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+//development
 // const getStoragePath = (file) => {
-//   const storagePath = path.join(__dirname, '../', '/storage/images',JSON.stringify(file?.name)); 
-
-//   // // Ensure the storage path directory exists
-//   // if (!fs.existsSync(storagePath)){
-//   //   fs.mkdirSync(storagePath, { recursive: true });
-//   // }
+//   const storagePath = path.join(__dirname, '../', 'storage/files', file.name);
+//   const directory = path.dirname(storagePath);
+//   if (!fs.existsSync(directory)) {
+//     fs.mkdirSync(directory, { recursive: true });
+//   }
 
 //   return storagePath;
 // };
+//production
 const getStoragePath = (file) => {
   const tempDir = os.tmpdir();
   const storagePath = path.join(tempDir, file.name);

@@ -24,11 +24,9 @@ const projectSchema = new Schema(
     },
     startDate: {
       type: Date,
-    
     },
     approveDate: {
       type: Date,
-    
     },
     endDate: {
       type: Date,
@@ -44,6 +42,23 @@ const projectSchema = new Schema(
       ],
       default: "In-Discussion",
     },
+    files: [
+      {
+        name: {
+          type: String,
+        },
+        path: {
+          type: String,
+        },
+        type: {
+          type: String,
+        },
+        size: {
+          type: Number,
+        },
+      },
+    ],
+    assignTo: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,

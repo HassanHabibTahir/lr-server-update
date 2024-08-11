@@ -8,14 +8,12 @@ const auth = require('./auth');
 const task = require('./task');
 
 module.exports = function (app) {
-	app.use("/api/images", express.static(path.join("src/storage/images")));
+	app.use("/api/files", express.static(path.join("src/storage/files")));
 	app.use("/api/auth",auth);
 	app.use('/api/admin', admin);
 	app.use('/api/user', user);
 	app.use('/api/client', client)
 	app.use('/api/project', project)
 	app.use('/api/task', task);
-	
-
 
 }

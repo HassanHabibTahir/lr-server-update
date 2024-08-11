@@ -1,4 +1,5 @@
 // services/projectService.js
+const { Comments } = require('../Models');
 const Project = require('../Models/project');
 
 
@@ -12,12 +13,23 @@ const addProject = async (projectData) => {
 // Retrieve all projects
 const getAllProjects = async () => {
  
-  const projects = await Project.find({});
+  const projects = await Project.find({})
+  .populate([
+    { path: "assignTo",select: "userName email firstName lastName"},
+    { path: "comments", select: "text author createdAt" },
+  ]);
+
+
+
   return projects;
 };
 const getProjectById = async (id) => {
 
-  const projects = await Project.findById(id);
+  const projects = await Project.findById(id)
+  .populate([
+    { path: "assignTo",select: "userName email firstName lastName"},
+    { path: "comments", select: "text author createdAt" },
+  ]);
   return projects;
 };
 
@@ -36,10 +48,22 @@ const deleteProject = async (projectId) => {
   return deletedProject;
 };
 
+//add comments
+const addComment = async (projectId, _comment) => { 
+  const comment = new Comments(_comment);
+  await comment.save();
+  const project = await Project.findById(projectId);
+    project?.comments?.push(comment?._id);
+  await project.save();
+  return project;
+};
+
+
 module.exports = {
   addProject,
   getAllProjects,
   getProjectById,
   updateProject,
   deleteProject,
+  addComment
 };

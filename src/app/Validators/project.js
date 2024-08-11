@@ -47,6 +47,9 @@ exports.createProject = [
     .optional()
     .isString()
     .withMessage("Approve Date must be a valid date"),
+  // body("assignTo")
+  //   .isArray({ min: 1 })
+  //   .withMessage("assignTo must be a non-empty array"),
   body().custom((value, { req }) => {
     const allowedFields = [
       "title",
@@ -58,6 +61,8 @@ exports.createProject = [
       "startDate",
       "completeDate",
       "approveDate",
+      "files",
+      "assignTo",
     ];
     const unknownFields = Object.keys(req.body).filter(
       (field) => !allowedFields.includes(field)
@@ -116,6 +121,18 @@ exports.updateProject = [
     .withMessage(
       "Status must be one of: In-Discussion, Approved, In-Development, Review, Completed"
     ),
+  (exports.addComments = [
+    param("id")
+      .notEmpty()
+      .withMessage("Project ID is required")
+      .isMongoId()
+      .withMessage("Invalid Project ID"),
+    body("text")
+      .notEmpty()
+      .withMessage("Text is required")
+      .isString()
+      .withMessage("Text must be a string"),
+  ]),
   body().custom((value, { req }) => {
     const allowedFields = [
       "title",

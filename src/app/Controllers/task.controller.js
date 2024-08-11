@@ -117,16 +117,20 @@ exports.addComment = async (req, res) => {
       return res
         .status(httpStatus.NOT_FOUND)
         .json({ message: "Task not found!" });
-        if (user?.role !== Roles?.ADMIN && user?.role !== Roles?.SuperAdmin) {
-        
-        const assignTo = await taskService.checkTaskWithToAssigned(user?.userId,req.params.id);
-        if (!assignTo ) {
-          return res.status(httpStatus.FORBIDDEN).json({ message: "Task not assigned to you!" });
-        }
-      }
+
+    const assignTo = await taskService.checkTaskWithToAssigned(
+      user?.userId,
+      req.params.id
+    );
+    if (!assignTo) {
+      return res
+        .status(httpStatus.FORBIDDEN)
+        .json({ message: "Task not assigned to you!" });
+    }
+
     const comment = await taskService.addComment(req?.params?.id, {
       text: req?.body?.text,
-      taskToAssigned: task?.assignedTo?._id,
+      commentBy: user?._id,
     });
 
     if (!comment) {
@@ -134,7 +138,7 @@ exports.addComment = async (req, res) => {
         .status(httpStatus.NOT_FOUND)
         .json({ message: "Task not found" });
     }
-   return res.send(comment);
+    return res.send(comment);
   } catch (error) {
     res.status(400).send(error);
   }

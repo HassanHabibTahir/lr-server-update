@@ -7,14 +7,14 @@ const { Roles } = require("../../helpers/roles");
 
 const validateToken = (requiredRoles) => {
   return async (req, res, next) => {
-    const token = req.header('Authorization');
+    const token = req.header("Authorization");
     if (!token)
       return res.status(401).send("Access denied. Invalid token provided.");
 
     try {
       const { data } = jwt.verify(token, app_constants.APP_SECRET);
       const user = await userService.getUserInfo(data.userId);
-     
+
       if (!user || !requiredRoles.includes(user.role)) {
         return res
           .status(401)
@@ -36,6 +36,20 @@ module.exports = {
   User: validateToken([Roles.USER]),
   SuperAdmin: validateToken([Roles.SuperAdmin]),
   AdminOrSuperAdmin: validateToken([Roles.ADMIN, Roles.SuperAdmin]),
-  AdminOrSuperAdminOrClient: validateToken([Roles.ADMIN, Roles.SuperAdmin,Roles.CLIENT]),
-  AdminOrSuperAdminOrEmployee: validateToken([Roles.ADMIN, Roles.SuperAdmin,Roles.USER]),
+  AdminOrSuperAdminOrClient: validateToken([
+    Roles.ADMIN,
+    Roles.SuperAdmin,
+    Roles.CLIENT,
+  ]),
+  AdminOrSuperAdminOrEmployee: validateToken([
+    Roles.ADMIN,
+    Roles.SuperAdmin,
+    Roles.USER,
+  ]),
+  AdminOrSuperAdminOrEmployeeOrClient: validateToken([
+    Roles.ADMIN,
+    Roles.SUPERADMIN,
+    Roles.USER,
+    Roles.CLIENT,
+  ]),
 };
