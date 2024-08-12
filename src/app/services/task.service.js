@@ -41,6 +41,22 @@ const updateProgress = async (taskId, progress) => {
   return updatedTask;
 };
 
+
+
+// Update Task Status
+const updateTaskStatus = async (taskId, progress) => {
+  // const updatedTask = await Task.findByIdAndUpdate(
+  //   taskId,
+  //   { progress: progress },
+  //   { new: true, runValidators: true }
+  // );
+  // if (!updatedTask) {
+  //   return { error: `Task with ID ${taskId} not found` };
+  // }
+  // return updatedTask;
+};
+
+
 // Update Task Estimation
 const updateEstimation = async (taskId, estimation) => {
   const updatedTask = await Task.findByIdAndUpdate(
@@ -76,6 +92,7 @@ const deleteTask = async (taskId) => {
 // get Tasks
 const getAllTasks = async () => {
   const tasks = await Task.find({}).populate([
+    { path: "logs.userId", select: "firstName lastName email" }, 
     { path: "projectId", select: "title description" },
     { path: "assignedTo", select: "firstName lastName email" },
     { path: "comments", select: "text author createdAt" },
@@ -115,6 +132,7 @@ module.exports = {
   getAllTasks,
   getTaskById,
   addComment,
-  checkTaskWithToAssigned
+  checkTaskWithToAssigned,
+  updateTaskStatus
 };
 
