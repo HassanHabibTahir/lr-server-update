@@ -61,7 +61,7 @@ exports.createProject = [
       "completeDate",
       "approveDate",
       "files",
-      "assignTo",
+      "assignedTo",
     ];
     const unknownFields = Object.keys(req.body).filter(
       (field) => !allowedFields.includes(field)

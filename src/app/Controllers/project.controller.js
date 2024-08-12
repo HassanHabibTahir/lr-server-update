@@ -174,7 +174,7 @@ const canComment = async (user, projectId) => {
   } else {
     const checkUser = await Project.findOne({
       _id: projectId,
-      assignTo: { $in: user?.userId },
+      assignedTo: { $in: user?.userId },
     });
     return !!checkUser;
   }

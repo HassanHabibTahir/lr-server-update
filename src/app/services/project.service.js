@@ -34,7 +34,7 @@ const getAllProjects = async () => {
  
   const projects = await Project.find({})
   .populate([
-    { path: "assignTo",select: "userName email firstName lastName"},
+    { path: "assignedTo",select: "userName email firstName lastName"},
     { path: "comments", select: "text author createdAt" },
   ]);
 
@@ -46,7 +46,7 @@ const getProjectById = async (id) => {
 
   const projects = await Project.findById(id)
   .populate([
-    { path: "assignTo",select: "userName email firstName lastName"},
+    { path: "assignedTo",select: "userName email firstName lastName"},
     { path: "comments", select: "text author createdAt" },
   ]);
   return projects;
