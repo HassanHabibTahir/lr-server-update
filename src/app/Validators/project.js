@@ -75,7 +75,7 @@ exports.createProject = [
 ];
 
 exports.updateProject = [
-  param("projectId")
+  param("id")
     .notEmpty()
     .withMessage("Project ID is required")
     .isMongoId()
@@ -121,18 +121,7 @@ exports.updateProject = [
     .withMessage(
       "Status must be one of: In-Discussion, Approved, In-Development, Review, Completed"
     ),
-  (exports.addComments = [
-    param("id")
-      .notEmpty()
-      .withMessage("Project ID is required")
-      .isMongoId()
-      .withMessage("Invalid Project ID"),
-    body("text")
-      .notEmpty()
-      .withMessage("Text is required")
-      .isString()
-      .withMessage("Text must be a string"),
-  ]),
+
   body().custom((value, { req }) => {
     const allowedFields = [
       "title",
@@ -154,6 +143,20 @@ exports.updateProject = [
     return true;
   }),
 ];
+
+
+exports.addComments = [
+  param("id")
+    .notEmpty()
+    .withMessage("Project ID is required")
+    .isMongoId()
+    .withMessage("Invalid Project ID"),
+  body("text")
+    .notEmpty()
+    .withMessage("Text is required")
+    .isString()
+    .withMessage("Text must be a string"),
+],
 
 exports.deleteProject = [
   param("projectId")

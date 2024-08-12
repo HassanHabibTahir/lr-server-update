@@ -3,6 +3,8 @@ const httpStatus = require("http-status");
 const projectService = require("../services/project.service");
 const { getStoragePath } = require("../../helpers/storageUtil");
 const { Roles } = require("../../helpers/roles");
+const { default: mongoose } = require("mongoose");
+const { Project } = require("../Models");
 
 // Create a new project
 exports.createProject = async (req, res) => {
@@ -30,7 +32,7 @@ exports.createProject = async (req, res) => {
     if (projectFiles.length > 0) {
       body.files = projectFiles;
     }
-    body.assignTo = body.assignTo || []; 
+    body.assignTo = body.assignTo || [];
     const newProject = await projectService.addProject(body);
     res.status(httpStatus.CREATED).json(newProject);
   } catch (error) {
@@ -53,6 +55,7 @@ exports.getAllProjects = async (req, res) => {
       .json({ message: "Failed to fetch projects", error: error.message });
   }
 };
+
 exports.getAllById = async (req, res) => {
   try {
     const project = await projectService.getProjectById(req?.params?.id);
@@ -68,10 +71,11 @@ exports.getAllById = async (req, res) => {
 // Update project details
 exports.updateProject = async (req, res) => {
   try {
-    const { projectId } = req.params;
+    const { id } = req.params;
+    console.log(id,"projectId");
     const projectData = req.body;
     const updatedProject = await projectService.updateProject(
-      projectId,
+      id,
       projectData
     );
     res.status(httpStatus.OK).json(updatedProject);
@@ -97,12 +101,18 @@ exports.deleteProject = async (req, res) => {
   }
 };
 
-const canComment = (user, project) => {
-  
-    if (!user) return false;
-    const allowedRoles = [Roles.SuperAdmin, Roles.ADMIN, Roles.USER];
-    return allowedRoles.includes(user?.role) || project.assignTo.includes(user?.userId);
- 
+const canComment = async (user, projectId) => {
+  const allowedRoles = [Roles.SuperAdmin, Roles.ADMIN];
+  const hasRolePermission = allowedRoles.includes(user?.role);
+  if (hasRolePermission) {
+    return true;
+  } else {
+    const checkUser = await Project.findOne({
+      _id: projectId,
+      assignTo: { $in: user?.userId },
+    });
+    return !!checkUser;
+  }
 };
 
 exports.addCommentSToProject = async (req, res) => {
@@ -110,26 +120,33 @@ exports.addCommentSToProject = async (req, res) => {
     const user = await req.tokenData;
     const { id } = req.params;
     const project = await projectService.getProjectById(id);
-    if (!canComment(user, project)) {
+    if (!project) {
+      return res
+        .status(httpStatus.NOT_FOUND)
+        .json({ message: "Project not found" });
+    }
+    const isExist = await canComment(user, id);
+    console.log(isExist);
+    if (!isExist) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "You do not have permission to comment on this project",
       });
     }
- 
     const comment = await projectService.addComment(id, {
       text: req?.body?.text,
-      commentBy:user?.userId,
+      commentBy: user?.userId,
     });
     if (!comment) {
       return res
         .status(httpStatus.NOT_FOUND)
         .json({ message: "Task not found" });
     }
-    return res.status(200).json(comment);
+    return res.status(200).json({ message: "Comment added successfully" });
   } catch (error) {
     console.error(`Catch Error: in addCommentToProject => ${error}`);
-    res
-     .status(httpStatus.INTERNAL_SERVER_ERROR)
-     .json({ message: "Failed to add comment to project", error: error.message });
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      message: "Failed to add comment to project",
+      error: error.message,
+    });
   }
 };

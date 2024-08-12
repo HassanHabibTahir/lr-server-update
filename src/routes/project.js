@@ -27,7 +27,7 @@ router.get("/:id", projectController.getAllById),
     projectController.deleteProject
   );
 router.put(
-  "/update/:projectId",
+  "/update/:id",
   [projectValidator.updateProject, errorMsgs],
   AdminOrSuperAdmin,
   projectController.updateProject
@@ -40,5 +40,7 @@ router.post(
   [projectValidator.addComments, errorMsgs],
   projectController.addCommentSToProject
 );
+
+
 
 module.exports = router;
