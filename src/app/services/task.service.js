@@ -18,14 +18,22 @@ const addTask = async (projectData) => {
 
 // Assign Task to Developer
 const assignTask = async (taskId, developerId) => {
-  const updatedTask = await Task.findByIdAndUpdate(
-    taskId,
-    { assignedTo: developerId },
-    { new: true, runValidators: true }
-  );
-  if (!updatedTask) {
+  const task = await Task.findById(taskId);
+  if (!task) {
     return { error: `Task with ID ${taskId} not found` };
   }
+  console.log(task?.assignedTo, "task");
+  const checkUser = await Task.findOne({
+    _id: taskId,
+    assignedTo: { $in: developerId },
+  });
+  if (!!checkUser) {
+    return {
+      message: `Developer with ID ${developerId} is already assigned to this task`,
+    };
+  }
+  task.assignedTo.push(developerId);
+  const updatedTask = await task.save();
   return updatedTask;
 };
 // Update Task Progress
@@ -40,22 +48,6 @@ const updateProgress = async (taskId, progress) => {
   }
   return updatedTask;
 };
-
-
-
-// Update Task Status
-const updateTaskStatus = async (taskId, progress) => {
-  // const updatedTask = await Task.findByIdAndUpdate(
-  //   taskId,
-  //   { progress: progress },
-  //   { new: true, runValidators: true }
-  // );
-  // if (!updatedTask) {
-  //   return { error: `Task with ID ${taskId} not found` };
-  // }
-  // return updatedTask;
-};
-
 
 // Update Task Estimation
 const updateEstimation = async (taskId, estimation) => {
@@ -92,7 +84,7 @@ const deleteTask = async (taskId) => {
 // get Tasks
 const getAllTasks = async () => {
   const tasks = await Task.find({}).populate([
-    { path: "logs.userId", select: "firstName lastName email" }, 
+    { path: "logs.userId", select: "firstName lastName email" },
     { path: "projectId", select: "title description" },
     { path: "assignedTo", select: "firstName lastName email" },
     { path: "comments", select: "text author createdAt" },
@@ -112,7 +104,6 @@ const getTaskById = async (id) => {
 };
 
 const addComment = async (taskId, _comment) => {
- 
   const comment = new Comments(_comment);
   await comment.save();
   const task = await Task.findById(taskId);
@@ -133,6 +124,5 @@ module.exports = {
   getTaskById,
   addComment,
   checkTaskWithToAssigned,
-  updateTaskStatus
-};
 
+};

@@ -18,11 +18,12 @@ router.post(
   AdminOrSuperAdmin,
   projectController.createProject
 );
+router.put("/addFiles/:id",[projectValidator.addFiles,errorMsgs],projectController.addProjectFiles)
 router.get("/", projectController.getAllProjects);
 router.get("/:id", projectController.getAllById),
   router.delete(
     "/delete/:projectId",
-    [projectValidator.deleteProject, errorMsgs],
+    [projectValidator.ID, errorMsgs],
     AdminOrSuperAdmin,
     projectController.deleteProject
   );
@@ -41,6 +42,6 @@ router.post(
   projectController.addCommentSToProject
 );
 
-
+router.put("/assign/:id",AdminOrSuperAdmin, [projectValidator.assign,errorMsgs],projectController.assignProject);
 
 module.exports = router;

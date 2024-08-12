@@ -15,8 +15,8 @@ router.delete("/delete/:id",AdminOrSuperAdmin,[taskValidator.id,errorMsgs], task
 router.get("/", taskController.getTasks)
 router.get("/:id",[taskValidator.id,errorMsgs], taskController.getTaskById)
 router.post("/add-comment/:id",AdminOrSuperAdminOrEmployee,[taskValidator.addComments, errorMsgs],taskController.addComment);
-
 router.put("/updateStatus/:id",AdminOrSuperAdminOrEmployee,taskController?.updateStatus);
+router.put("/addFiles/:id",AdminOrSuperAdmin,[taskValidator.addFiles,errorMsgs],taskController.addTaskFiles)
 // add attacthments 
 
 

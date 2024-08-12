@@ -42,6 +42,72 @@ exports.createProject = async (req, res) => {
       .json({ message: "Failed to create project", error: error.message });
   }
 };
+// addProjectFiles
+exports.addProjectFiles = async(req,res)=>{
+  try {
+    const { id } = req.params;
+    const Files = req.files.files;
+    if (req.files && req.files.files) {
+      let files = req.files.files;
+      if (!Array.isArray(Files)) {
+        files = [Files];
+      }
+      projectFiles = await Promise.all(
+        files.map(async (file) => {
+          const storagePath = getStoragePath(file);
+          await file.mv(storagePath);
+          return {
+            name: file.name,
+            path: file.name,
+            size: file.size,
+            type: file.mimetype,
+          };
+        })
+      );
+    }
+
+    const project = await Project.findById(id);
+    if (!project) {
+      return res.status(httpStatus.NOT_FOUND).json({ message: 'Project not found' });
+    }
+    const updatedProject = await Project.findByIdAndUpdate(
+      id,
+      { $push: { files: { $each: projectFiles } } }, 
+      { new: true, runValidators: true }
+    );
+    if (!updatedProject) {
+      return res.status(httpStatus.NOT_FOUND).json({ message: 'Project not found' });
+    }
+    res.status(httpStatus.OK).json(updatedProject);
+  } catch (error) {
+    console.error(`Catch Error: in addProjectFiles => ${error}`);
+    res
+     .status(httpStatus.INTERNAL_SERVER_ERROR)
+     .json({ message: "Failed to add project files", error: error.message });
+  }
+}
+// assign project
+exports.assignProject = async (req, res) => {
+  try {
+
+    const project = await projectService.assignProject(
+      req?.params?.id,
+      req?.body?.assignedTo,
+    );
+    
+    if (project.error) {
+      return res.status(httpStatus.NOT_FOUND).json({ error: project.error });
+    }
+  
+    res.status(200).json(project);  
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+
+
+
+
 
 // Retrieve all projects
 exports.getAllProjects = async (req, res) => {
@@ -72,7 +138,6 @@ exports.getAllById = async (req, res) => {
 exports.updateProject = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id,"projectId");
     const projectData = req.body;
     const updatedProject = await projectService.updateProject(
       id,

@@ -10,6 +10,25 @@ const addProject = async (projectData) => {
   return newProject;
 };
 
+
+const assignProject = async (projectId, developerId) => {
+  const project = await Project.findById(projectId);
+  if (!project) {
+    return { error: `Task with ID ${projectId} not found` };
+  }
+  
+  const checkUser = await Project.findOne({
+    _id: projectId,
+    assignedTo: { $in: developerId },
+  });
+  if (checkUser) {
+    return { error: `User with ID ${developerId} is already assigned to this project` };
+  }
+  project.assignedTo.push(developerId);
+  const updatedProject = await project.save();
+  return updatedProject;
+};
+
 // Retrieve all projects
 const getAllProjects = async () => {
  
@@ -65,5 +84,6 @@ module.exports = {
   getProjectById,
   updateProject,
   deleteProject,
-  addComment
+  addComment,
+  assignProject
 };

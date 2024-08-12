@@ -1,4 +1,5 @@
 const { body, param } = require("express-validator");
+const { default: mongoose } = require("mongoose");
 
 exports.createTask = [
   body("name")
@@ -16,10 +17,10 @@ exports.createTask = [
     .withMessage("Project ID is required")
     .isMongoId()
     .withMessage("Project ID must be a valid Mongo ID"),
-  body("assignedTo")
-    .optional()
-    .isMongoId()
-    .withMessage("Assigned To must be a valid Mongo ID"),
+  // body("assignedTo")
+  //   .optional()
+  //   .isMongoId()
+  //   .withMessage("Assigned To must be a valid Mongo ID"),
   body("status")
     .notEmpty()
     .withMessage("Status is required")
@@ -61,10 +62,14 @@ exports.assign = [
     .isMongoId()
     .withMessage("Invalid Task ID"),
   body("assignedTo")
-    .notEmpty()
-    .withMessage("assignedTo is required")
-    .isMongoId()
-    .withMessage("Assigned To must be a valid Mongo ID"),
+    .isArray({ min: 1 })
+    .withMessage("assignedTo must be a non-empty array")
+    .custom((array) => {
+      if (!array.every(id => mongoose.Types.ObjectId.isValid(id))) {
+        throw new Error("All assignedTo elements must be valid Mongo IDs");
+      }
+      return true;
+    })
 ];
 
 exports.progress = [
@@ -146,7 +151,7 @@ exports.addComments = [
     .withMessage("Task ID is required")
     .isMongoId()
     .withMessage("Invalid Task ID"),
-    body("text")
+  body("text")
     .notEmpty()
     .withMessage("Text is required")
     .isString()
@@ -159,4 +164,29 @@ exports.id = [
     .withMessage("Task ID is required")
     .isMongoId()
     .withMessage("Invalid Task ID"),
+];
+exports.addFiles = [
+  param("id")
+    .notEmpty()
+    .withMessage("Project ID is required")
+    .isMongoId()
+    .withMessage("Invalid Project ID"),
+  body("files")
+    .custom((value, { req }) => {
+      if (!req.files || !req.files.files) {
+        throw new Error("No files uploaded");
+      }
+
+      let files = req.files.files;
+      if (!Array.isArray(files)) {
+        files = [files];
+      }
+
+      if (files.length === 0) {
+        throw new Error("Files must contain at least one file");
+      }
+
+      return true;
+    })
+    .withMessage("files must be a non-empty array"),
 ];

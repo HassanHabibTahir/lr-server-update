@@ -30,11 +30,60 @@ exports.createTask = async (req, res) => {
     if (projectFiles.length > 0) {
       taskData.files = projectFiles;
     }
+    // body.assignTo ||
+    taskData.assignTo = ["66b8851550ea3f8fc3cd67c0"];
     const task = await taskService.addTask(taskData);
     res.status(httpStatus.CREATED).send(task);
   } catch (error) {
     console.log(error);
     res.status(400).send(error);
+  }
+};
+exports.addTaskFiles = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const Files = req.files.files;
+    if (req.files && req.files.files) {
+      let files = req.files.files;
+      if (!Array.isArray(Files)) {
+        files = [Files];
+      }
+      taskFiles = await Promise.all(
+        files.map(async (file) => {
+          const storagePath = getStoragePath(file);
+          await file.mv(storagePath);
+          return {
+            name: file.name,
+            path: file.name,
+            size: file.size,
+            type: file.mimetype,
+          };
+        })
+      );
+    }
+
+    const task = await Task.findById(id);
+    if (!task) {
+      return res
+        .status(httpStatus.NOT_FOUND)
+        .json({ message: "Task not found" });
+    }
+    const updatedTask = await Task.findByIdAndUpdate(
+      id,
+      { $push: { files: { $each: taskFiles } } },
+      { new: true, runValidators: true }
+    );
+    if (!updatedTask) {
+      return res
+        .status(httpStatus.NOT_FOUND)
+        .json({ message: "Task not found" });
+    }
+    res.status(httpStatus.OK).json(updatedTask);
+  } catch (error) {
+    console.error(`Catch Error: in addTaskFiles => ${error}`);
+    res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: "Failed to add Task files", error: error.message });
   }
 };
 // assign tasks
@@ -47,7 +96,7 @@ exports.assignTask = async (req, res) => {
     if (task.error) {
       return res.status(httpStatus.NOT_FOUND).json({ error: task.error });
     }
-    res.send(task);
+    res.status(200).json(task);  
   } catch (error) {
     res.status(400).send(error);
   }
@@ -69,7 +118,6 @@ exports.updateProgress = async (req, res) => {
   }
 };
 
-
 exports.updateStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -77,16 +125,16 @@ exports.updateStatus = async (req, res) => {
     const { status } = req.body;
     const task = await Task.findById(id);
     if (!task) {
-      return res.status(404).json({ message: 'Task not found' });
+      return res.status(404).json({ message: "Task not found" });
     }
     const oldStatus = task.status;
     task.status = status;
     const logEntry = {
-      oldStatus: oldStatus, 
-      newStatus: status, 
-      userId: user?.userId, 
+      oldStatus: oldStatus,
+      newStatus: status,
+      userId: user?.userId,
       timestamp: new Date(),
-      logMessage:`Status updated from ${oldStatus} to ${status}`, 
+      logMessage: `Status updated from ${oldStatus} to ${status}`,
     };
     task.logs.push(logEntry);
     await task.save();
@@ -95,8 +143,6 @@ exports.updateStatus = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-
-
 
 // update estimation
 exports.updateEstimation = async (req, res) => {
@@ -113,7 +159,6 @@ exports.updateEstimation = async (req, res) => {
     res.status(400).send(error);
   }
 };
-
 // update task
 exports.updateTask = async (req, res) => {
   try {

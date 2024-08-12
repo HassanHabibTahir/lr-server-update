@@ -1,4 +1,5 @@
 const { body, param } = require("express-validator");
+const { default: mongoose } = require("mongoose");
 
 exports.createProject = [
   body("title")
@@ -47,9 +48,7 @@ exports.createProject = [
     .optional()
     .isString()
     .withMessage("Approve Date must be a valid date"),
-  // body("assignTo")
-  //   .isArray({ min: 1 })
-  //   .withMessage("assignTo must be a non-empty array"),
+
   body().custom((value, { req }) => {
     const allowedFields = [
       "title",
@@ -144,7 +143,6 @@ exports.updateProject = [
   }),
 ];
 
-
 exports.addComments = [
   param("id")
     .notEmpty()
@@ -157,11 +155,50 @@ exports.addComments = [
     .isString()
     .withMessage("Text must be a string"),
 ],
-
-exports.deleteProject = [
-  param("projectId")
+exports.ID = [
+  param('id')
     .notEmpty()
-    .withMessage("Project ID is required")
+    .withMessage('Project ID is required')
     .isMongoId()
-    .withMessage("Invalid Project ID"),
+    .withMessage('Invalid Project ID'),
+];
+
+exports.addFiles = [
+  param('id')
+    .notEmpty()
+    .withMessage('Project ID is required')
+    .isMongoId()
+    .withMessage('Invalid Project ID'),
+  body('files')
+    .custom((value, { req }) => {
+      if (!req.files || !req.files.files) {
+        throw new Error('No files uploaded');
+      }
+
+      let files = req.files.files;
+      if (!Array.isArray(files)) {
+        files = [files]; 
+      }
+      if (files.length === 0) {
+        throw new Error('Files must contain at least one file');
+      }
+      return true; 
+    })
+    .withMessage('files must be a non-empty array'),
+];
+exports.assign = [
+  param("id")
+    .notEmpty()
+    .withMessage("Task ID is required")
+    .isMongoId()
+    .withMessage("Invalid Task ID"),
+  body("assignedTo")
+    .isArray({ min: 1 })
+    .withMessage("assignedTo must be a non-empty array")
+    .custom((array) => {
+      if (!array.every(id => mongoose.Types.ObjectId.isValid(id))) {
+        throw new Error("All assignedTo elements must be valid Mongo IDs");
+      }
+      return true;
+    })
 ];
