@@ -22,7 +22,7 @@ router.put("/addFiles/:id",[projectValidator.addFiles,errorMsgs],projectControll
 router.get("/", projectController.getAllProjects);
 router.get("/:id", projectController.getAllById),
   router.delete(
-    "/delete/:projectId",
+    "/delete/:id",
     [projectValidator.ID, errorMsgs],
     AdminOrSuperAdmin,
     projectController.deleteProject

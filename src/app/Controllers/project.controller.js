@@ -155,8 +155,8 @@ exports.updateProject = async (req, res) => {
 // Delete a project
 exports.deleteProject = async (req, res) => {
   try {
-    const { projectId } = req.params;
-    await projectService.deleteProject(projectId);
+    const { id } = req.params;
+    await projectService.deleteProject(id);
     res.status(httpStatus.OK).json({ message: "Project deleted successfully" });
   } catch (error) {
     console.error(`Catch Error: in deleteProject => ${error}`);
