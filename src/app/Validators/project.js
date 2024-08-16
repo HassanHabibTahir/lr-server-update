@@ -35,7 +35,6 @@ exports.createProject = [
     .withMessage("Client ID is required")
     .isMongoId()
     .withMessage("Invalid Client ID"),
-  body("notes").optional().isString().withMessage("Invalid Additional notes"),
   body("startDate")
     .optional()
     .isString()
@@ -56,7 +55,6 @@ exports.createProject = [
       "status",
       "priority",
       "clientId",
-      "notes",
       "startDate",
       "completeDate",
       "approveDate",
