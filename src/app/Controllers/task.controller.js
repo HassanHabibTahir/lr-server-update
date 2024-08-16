@@ -30,8 +30,7 @@ exports.createTask = async (req, res) => {
     if (projectFiles.length > 0) {
       taskData.files = projectFiles;
     }
-    // body.assignTo ||
-    taskData.assignTo = ["66b8851550ea3f8fc3cd67c0"];
+
     const task = await taskService.addTask(taskData);
     res.status(httpStatus.CREATED).send(task);
   } catch (error) {
