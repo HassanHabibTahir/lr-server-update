@@ -17,10 +17,6 @@ exports.createTask = [
     .withMessage("Project ID is required")
     .isMongoId()
     .withMessage("Project ID must be a valid Mongo ID"),
-  // body("assignedTo")
-  //   .optional()
-  //   .isMongoId()
-  //   .withMessage("Assigned To must be a valid Mongo ID"),
   body("status")
     .notEmpty()
     .withMessage("Status is required")
