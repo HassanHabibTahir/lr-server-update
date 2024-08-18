@@ -7,14 +7,15 @@ const taskSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: [
-        "pending",
-        "in_progress",
-        "on_hold",
-        "completed",
-        "canceled",
+        "Start",
+        "Pending",
+        "In_progress",
+        "On_hold",
+        "Completed",
+        "Canceled",
         "Closed",
       ],
-      default: "To Do",
+      default: "Start",
     },
 
     estimation: Number,
